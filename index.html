@@ -1,19 +1,20 @@
-<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Ausculta Pulmonar</title>
+    <title>Treino de Ausculta Pulmonar</title>
     <style>
         :root {
             --primary: #4f46e5;
             --bg: #f8fafc;
             --card: #ffffff;
             --text: #1e293b;
+            --success: #22c55e;
+            --error: #ef4444;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
@@ -28,15 +29,14 @@
             background: var(--card);
             width: 100%;
             max-width: 450px;
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 24px;
-            shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            text-align: center;
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            text-align: center;
         }
 
         .progress-bar {
-            height: 6px;
+            height: 8px;
             background: #e2e8f0;
             border-radius: 10px;
             margin-bottom: 2rem;
@@ -61,64 +61,69 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
+            transition: all 0.2s;
             box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
         }
 
+        .audio-btn:hover { transform: scale(1.05); background: #4338ca; }
         .audio-btn:active { transform: scale(0.95); }
 
         .options-grid {
             display: grid;
             gap: 12px;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .option {
-            padding: 14px;
+            padding: 15px;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            border-radius: 14px;
             background: none;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.95rem;
             color: #475569;
             transition: all 0.2s;
+            text-align: left;
+            outline: none;
         }
 
         .option:hover:not(:disabled) {
             border-color: var(--primary);
             background: #f5f3ff;
+            color: var(--primary);
         }
 
-        .correct { background: #dcfce7 !important; border-color: #22c55e !important; color: #166534; }
-        .wrong { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .correct { background: #dcfce7 !important; border-color: var(--success) !important; color: #166534 !important; }
+        .wrong { background: #fee2e2 !important; border-color: var(--error) !important; color: #991b1b !important; }
 
         .hidden { display: none; }
         
-        #next-btn {
-            margin-top: 1.5rem;
+        .btn-next {
+            margin-top: 2rem;
             width: 100%;
-            padding: 12px;
+            padding: 16px;
             background: #1e293b;
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: bold;
+            font-size: 1rem;
             cursor: pointer;
         }
 
-        h2 { margin-bottom: 0.5rem; }
-        p { color: #64748b; font-size: 0.9rem; }
+        h2 { margin: 0 0 0.5rem 0; font-size: 1.4rem; }
+        #question-count { color: #64748b; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; }
     </style>
 </head>
 <body>
 
-<div class="container" id="quiz-container">
+<div class="container">
     <div class="progress-bar"><div id="progress"></div></div>
     
-    <div id="game">
-        <p id="question-count">Questão 1 de 6</p>
-        <h2>O que você ouve?</h2>
+    <div id="game-screen">
+        <p id="question-count">Questão 1 de 12</p>
+        <h2>Qual som é este?</h2>
         
         <button class="audio-btn" onclick="playAudio()">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
@@ -127,48 +132,62 @@
         <audio id="audio-player"></audio>
 
         <div class="options-grid" id="options"></div>
-        <button id="next-btn" class="hidden" onclick="nextQuestion()">Próxima Questão</button>
+        <button id="next-btn" class="btn-next hidden" onclick="nextQuestion()">Próxima Ausculta ➡️</button>
     </div>
 
-    <div id="result" class="hidden">
-        <h1 style="font-size: 4rem; margin: 0;">🎉</h1>
-        <h2>Fim do Treino!</h2>
-        <p id="score-text"></p>
-        <button id="next-btn" onclick="location.reload()">Reiniciar</button>
+    <div id="result-screen" class="hidden">
+        <h1 style="font-size: 4rem; margin: 0;">🩺</h1>
+        <h2>Treino Concluído</h2>
+        <p id="score-text" style="font-size: 1.1rem; margin: 1rem 0;"></p>
+        <button class="btn-next" onclick="location.reload()">Refazer Simulação</button>
     </div>
 </div>
 
 <script>
-    const sounds = [
-        { file: 'Estertor_grosso.wav', name: 'Estertor grosso (bolhoso)' },
-        { file: 'Estertor_fino.wav', name: 'Estertor fino (crepitação)' },
+    const baseSounds = [
+        { file: 'estertor_grosso.wav', name: 'Estertor grosso (bolhoso)' },
+        { file: 'estertor_fino.wav', name: 'Estertor fino (crepitação)' },
         { file: 'ronco.wav', name: 'Ronco' },
-        { file: 'Murmurio_vesicular.wav', name: 'Murmúrio vesicular' },
+        { file: 'murmurio.wav', name: 'Murmúrio vesicular' },
         { file: 'estridor.wav', name: 'Estridor' },
         { file: 'sibilo.wav', name: 'Sibilo' }
     ];
 
     let currentIdx = 0;
     let score = 0;
-    let shuffledSounds = [];
+    let quizList = [];
+    const TOTAL_QUESTOES = 12;
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
 
     function initQuiz() {
-        shuffledSounds = [...sounds].sort(() => Math.random() - 0.5);
+        // Dobra os 6 sons para criar as 12 questões
+        quizList = shuffle([...baseSounds, ...baseSounds]);
         showQuestion();
     }
 
     function showQuestion() {
-        const q = shuffledSounds[currentIdx];
-        document.getElementById('audio-player').src = q.file;
-        document.getElementById('question-count').innerText = `Questão ${currentIdx + 1} de ${sounds.length}`;
-        document.getElementById('progress').style.width = `${((currentIdx + 1) / sounds.length) * 100}%`;
+        const q = quizList[currentIdx];
+        const audio = document.getElementById('audio-player');
+        
+        audio.src = q.file;
+        audio.load();
+        
+        document.getElementById('question-count').innerText = `Questão ${currentIdx + 1} de ${TOTAL_QUESTOES}`;
+        document.getElementById('progress').style.width = `${((currentIdx + 1) / TOTAL_QUESTOES) * 100}%`;
         
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
         
-        const choices = [q.name, ...sounds.filter(s => s.name !== q.name)
-            .sort(() => Math.random() - 0.5).slice(0, 3).map(s => s.name)]
-            .sort(() => Math.random() - 0.5);
+        const distractors = baseSounds.filter(s => s.name !== q.name).map(s => s.name);
+        shuffle(distractors);
+        const choices = shuffle([q.name, ...distractors.slice(0, 3)]);
 
         choices.forEach(choice => {
             const btn = document.createElement('button');
@@ -182,7 +201,9 @@
     }
 
     function playAudio() {
-        document.getElementById('audio-player').play();
+        const audio = document.getElementById('audio-player');
+        audio.currentTime = 0;
+        audio.play();
     }
 
     function checkAnswer(selected, correct, btn) {
@@ -203,17 +224,17 @@
 
     function nextQuestion() {
         currentIdx++;
-        if (currentIdx < sounds.length) {
+        if (currentIdx < TOTAL_QUESTOES) {
             showQuestion();
         } else {
-            document.getElementById('game').classList.add('hidden');
-            document.getElementById('result').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `Você acertou ${score} de ${sounds.length} sons pulmonares.`;
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('score-text').innerText = `Resultado: Acertou ${score} de ${TOTAL_QUESTOES} auscultas.`;
         }
     }
 
-    initQuiz();
+    window.onload = initQuiz;
 </script>
 </body>
-
 </html>
+```
