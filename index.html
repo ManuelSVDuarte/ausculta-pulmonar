@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abordagem Familiar: Família Santos</title>
+    <title>Estudo de Caso: Família Santos</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .hidden { display: none; }
-        .active-tab { background-color: white; color: #4f46e5; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
-        .active-subtab { background-color: #4f46e5; color: white; border-color: #4f46e5; }
+        .hidden { display: none !important; }
+        .active-tab { background-color: white !important; color: #4f46e5 !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .active-subtab { background-color: #4f46e5 !important; color: white !important; }
         .svg-container { min-width: 800px; }
         @media (max-width: 768px) { .svg-container { min-width: 700px; } }
     </style>
@@ -22,7 +22,7 @@
                 <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Família Santos</h1>
                 <p class="text-slate-500 text-sm italic">Ferramentas de Abordagem Familiar - Caso Clínico</p>
             </div>
-            <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200">
+            <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner">
                 <button onclick="switchTab('genograma')" id="btn-genograma" class="tab-btn px-6 py-2 rounded-xl text-sm font-bold active-tab transition-all">Genograma</button>
                 <button onclick="switchTab('ecomapa')" id="btn-ecomapa" class="tab-btn px-6 py-2 rounded-xl text-sm font-bold text-slate-500 transition-all">Ecomapa</button>
                 <button onclick="switchTab('clinica')" id="btn-clinica" class="tab-btn px-6 py-2 rounded-xl text-sm font-bold text-slate-500 transition-all">Análise Clínica</button>
@@ -33,11 +33,11 @@
     <main class="max-w-6xl mx-auto">
         <!-- SECÇÃO GENOGRAMA -->
         <section id="tab-genograma" class="content-section bg-white p-8 rounded-3xl shadow-md border border-slate-200 overflow-x-auto relative">
-            <h2 class="text-lg font-bold text-slate-700 italic mb-6">Genograma Multigeracional</h2>
+            <h2 class="text-lg font-bold text-slate-700 italic mb-6">Genograma Multigeracional (Padrão Académico)</h2>
             
             <div class="svg-container relative">
                 <svg viewBox="0 0 850 550" class="w-full h-auto">
-                    <!-- Conexões G1 -->
+                    <!-- Estrutura Multigeracional -->
                     <line x1="250" y1="80" x2="400" y2="80" stroke="#94a3b8" stroke-width="2" />
                     <line x1="325" y1="80" x2="325" y2="150" stroke="#94a3b8" stroke-width="2" />
                     <line x1="325" y1="150" x2="550" y2="150" stroke="#94a3b8" stroke-width="2" />
@@ -56,7 +56,7 @@
                         <text y="40" text-anchor="middle" font-size="11" font-weight="bold">Helena (DM2/Dem)</text>
                     </g>
 
-                    <!-- G2: Casal João (L) e Maria (R) -->
+                    <!-- G2: João Carlos e Maria de Fátima -->
                     <rect x="400" y="230" width="150" height="20" fill="none" stroke="#94a3b8" stroke-width="2" />
                     <g transform="translate(400, 230)">
                         <rect x="-22" y="-22" width="44" height="44" fill="white" stroke="black" stroke-width="2" />
@@ -65,7 +65,7 @@
                         <text y="40" text-anchor="middle" font-size="11" font-weight="bold">João Carlos</text>
                     </g>
                     <g transform="translate(550, 230)">
-                        <circle r="27" fill="none" stroke="#4f46e5" stroke-width="2" /> <!-- Pessoa Índice -->
+                        <circle r="27" fill="none" stroke="#4f46e5" stroke-width="2" />
                         <circle r="22" fill="white" stroke="black" stroke-width="2" />
                         <path d="M -22 0 A 22 22 0 0 0 22 0 Z" fill="#cbd5e1" />
                         <text y="5" text-anchor="middle" font-weight="bold">48</text>
@@ -90,49 +90,43 @@
                         <text y="40" text-anchor="middle" font-size="11" font-weight="bold">Ana Clara</text>
                     </g>
 
-                    <!-- Dinâmicas de Relacionamento -->
-                    <path d="M 430 220 Q 475 200 520 220" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2 2" /> <!-- Conflito casal -->
-                    <path d="M 580 360 L 420 110" stroke="#ef4444" stroke-width="1" stroke-dasharray="5 3" /> <!-- Distanciamento Ana/Helena -->
-                    <path d="M 550 210 L 400 100" stroke="#4f46e5" stroke-width="3" opacity="0.4" /> <!-- Cuidadora Principal -->
+                    <!-- Relações -->
+                    <path d="M 430 220 Q 475 200 520 220" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2 2" />
+                    <path d="M 580 360 L 420 110" stroke="#ef4444" stroke-width="1" stroke-dasharray="5 3" />
+                    <path d="M 550 210 L 400 100" stroke="#4f46e5" stroke-width="3" opacity="0.4" />
 
-                    <!-- Linha Moram Juntos -->
+                    <!-- Coabitação -->
                     <rect x="220" y="40" width="480" height="460" fill="none" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="12 6" rx="20" />
                 </svg>
 
-                <!-- LEGENDA DO GENOGRAMA -->
-                <div class="absolute top-0 right-0 bg-white/90 p-4 rounded-2xl border border-slate-200 shadow-xl backdrop-blur-md max-w-[220px]">
-                    <h4 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-3">Legenda do Genograma</h4>
-                    <div class="space-y-2.5">
+                <!-- LEGENDA GENOGRAMA -->
+                <div class="absolute top-0 right-0 bg-white/95 p-4 rounded-2xl border border-slate-200 shadow-xl backdrop-blur-md max-w-[200px] z-20">
+                    <h4 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-3">Legenda Genograma</h4>
+                    <div class="space-y-2">
                         <div class="flex items-center gap-3">
-                            <div class="w-4 h-4 border-2 border-black"></div>
+                            <div class="w-3.5 h-3.5 border border-black"></div>
                             <span class="text-[10px] font-bold text-slate-700">Homem</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="w-4 h-4 rounded-full border-2 border-black"></div>
+                            <div class="w-3.5 h-3.5 rounded-full border border-black"></div>
                             <span class="text-[10px] font-bold text-slate-700">Mulher</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="w-4 h-4 border-2 border-indigo-600"></div>
-                            <span class="text-[10px] font-bold text-indigo-600 tracking-tight">Pessoa Índice</span>
+                            <div class="w-3.5 h-3.5 border-2 border-indigo-600"></div>
+                            <span class="text-[10px] font-bold text-indigo-600">Pessoa Índice</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="w-4 h-4 bg-slate-300 border border-black"></div>
+                            <div class="w-3.5 h-3.5 bg-slate-200 border border-black"></div>
                             <span class="text-[10px] font-bold text-slate-700 italic">Doença Crónica</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-4 h-4 border border-black relative">
-                                <div class="absolute inset-0 flex items-center justify-center text-[10px]">X</div>
-                            </div>
-                            <span class="text-[10px] font-bold text-slate-700">Óbito (X)</span>
                         </div>
                         <div class="pt-2 border-t border-slate-100 space-y-2">
                             <div class="flex items-center gap-3">
-                                <div class="w-6 h-1 bg-indigo-600/40"></div>
-                                <span class="text-[10px] font-bold text-slate-700">Cuidadora Principal</span>
+                                <div class="w-5 h-1 bg-indigo-500/40"></div>
+                                <span class="text-[10px] font-bold text-slate-700">Cuidadora</span>
                             </div>
                             <div class="flex items-center gap-3">
-                                <div class="w-6 h-0.5 border-t-2 border-dashed border-red-400"></div>
-                                <span class="text-[10px] font-bold text-slate-700 italic">Estresse / Conflito</span>
+                                <div class="w-5 h-0.5 border-t border-dashed border-red-500"></div>
+                                <span class="text-[10px] font-bold text-slate-700">Conflito / Estresse</span>
                             </div>
                         </div>
                     </div>
@@ -144,141 +138,183 @@
         <section id="tab-ecomapa" class="content-section hidden bg-white p-8 rounded-3xl shadow-md border border-slate-200">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h2 class="text-lg font-bold text-slate-700 italic">Ecomapa: Rede de Apoio Externo</h2>
+                    <h2 class="text-lg font-bold text-slate-700 italic">Ecomapa: Rede Social</h2>
                 </div>
-                <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200">
-                    <button onclick="filterEcomapa('geral')" id="sub-geral" class="subtab-btn px-4 py-2 rounded-xl text-[10px] font-bold active-subtab transition-all">Geral Família</button>
-                    <button onclick="filterEcomapa('maria')" id="sub-maria" class="subtab-btn px-4 py-2 rounded-xl text-[10px] font-bold text-slate-500 transition-all">Maria</button>
-                    <button onclick="filterEcomapa('joao')" id="sub-joao" class="subtab-btn px-4 py-2 rounded-xl text-[10px] font-bold text-slate-500 transition-all">João</button>
-                    <button onclick="filterEcomapa('ana')" id="sub-ana" class="subtab-btn px-4 py-2 rounded-xl text-[10px] font-bold text-slate-500 transition-all">Ana Clara</button>
+                <div class="flex bg-slate-50 p-1 rounded-2xl border border-slate-200">
+                    <button onclick="filterEcomapa('geral')" id="sub-geral" class="subtab-btn px-4 py-1.5 rounded-xl text-[10px] font-bold active-subtab transition-all">Geral</button>
+                    <button onclick="filterEcomapa('maria')" id="sub-maria" class="subtab-btn px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-500 transition-all">Maria</button>
+                    <button onclick="filterEcomapa('joao')" id="sub-joao" class="subtab-btn px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-500 transition-all">João</button>
+                    <button onclick="filterEcomapa('ana')" id="sub-ana" class="subtab-btn px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-500 transition-all">Ana Clara</button>
                 </div>
             </div>
             
             <div class="svg-container relative">
                 <svg viewBox="0 0 800 600" class="w-full h-auto" id="ecomapa-svg"></svg>
                 
-                <div class="absolute top-0 left-0 bg-white/95 p-4 rounded-2xl border border-slate-200 shadow-xl backdrop-blur-md max-w-[200px]">
+                <div class="absolute top-0 left-0 bg-white/95 p-4 rounded-2xl border border-slate-200 shadow-xl backdrop-blur-md max-w-[180px]">
                     <h4 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-3">Legenda Ecomapa</h4>
                     <div class="space-y-3">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-1 bg-indigo-600 rounded-full"></div>
-                            <span class="text-[10px] font-bold text-slate-700 tracking-tight">Vínculo Forte / Apoio</span>
+                            <div class="w-6 h-1 bg-indigo-600 rounded-full"></div>
+                            <span class="text-[10px] font-bold text-slate-700">Apoio Forte</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-0.5 border-t-2 border-dashed border-slate-400"></div>
-                            <span class="text-[10px] font-bold text-slate-700 tracking-tight">Vínculo Fraco / Pontual</span>
+                            <div class="w-6 h-0.5 border-t border-dashed border-slate-400"></div>
+                            <span class="text-[10px] font-bold text-slate-700">Fraco / Pontual</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="text-red-500 font-bold text-lg leading-none">〰</div>
-                            <span class="text-[10px] font-bold text-slate-700 tracking-tight">Vínculo Estressante / Risco</span>
+                            <span class="text-[10px] font-bold text-slate-700">Risco / Stress</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECÇÃO CLÍNICA AVANÇADA -->
+        <!-- SECÇÃO CLÍNICA -->
         <section id="tab-clinica" class="content-section hidden space-y-6">
-            <!-- Escala de Vulnerabilidade -->
-            <div class="bg-indigo-900 text-white p-8 rounded-[2.5rem] shadow-2xl overflow-hidden">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <h2 class="text-2xl font-black uppercase tracking-tighter mb-2 italic tracking-tight">Escala de Vulnerabilidade Familiar</h2>
-                        <p class="text-indigo-200 text-sm max-w-xl">Cálculo de sentinelas conforme as diretrizes da APS apresentadas em aula.</p>
-                    </div>
-                    <div class="bg-white/10 backdrop-blur-xl p-4 rounded-3xl border border-white/20 text-center min-w-[180px]">
-                        <span class="block text-xs uppercase font-bold text-indigo-300 mb-1 tracking-widest">Risco Estimado</span>
-                        <span class="text-5xl font-black">08</span>
-                        <span class="block text-[10px] mt-1 font-bold bg-amber-500 text-white px-3 py-1 rounded-full">RISCO MÉDIO</span>
-                    </div>
+            <div class="bg-indigo-900 text-white p-8 rounded-[2.5rem] shadow-2xl flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <h2 class="text-2xl font-black uppercase tracking-tighter mb-1 italic">Escala de Vulnerabilidade</h2>
+                    <p class="text-indigo-200 text-sm">Cálculo de sentinelas conforme as diretrizes da APS.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-xl p-4 rounded-3xl border border-white/20 text-center min-w-[160px]">
+                    <span class="block text-xs uppercase font-bold text-indigo-300 mb-1 tracking-widest">Escore</span>
+                    <span class="text-5xl font-black">08</span>
+                    <span class="block text-[10px] mt-1 font-bold bg-amber-500 text-white px-3 py-1 rounded-full uppercase">Risco Médio</span>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Diagnóstico Funcional -->
-                <div class="lg:col-span-1 space-y-6">
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Classificação Funcional</h3>
-                        <div class="p-4 bg-amber-50 rounded-2xl border border-amber-100">
-                            <p class="text-sm font-bold text-amber-900 mb-1 uppercase tracking-tight">Moderadamente Funcional</p>
-                            <p class="text-xs text-amber-700 leading-relaxed italic">A família mantém o equilíbrio, mas há desgaste evidente na figura da cuidadora (Maria) e falhas na comunicação conjugal.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 italic">Análise de Risco (Sentinelas)</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2 text-sm">
+                            <span class="text-slate-600">Maior de 70 anos (D. Helena)</span>
+                            <span class="font-bold text-indigo-600">+1</span>
                         </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Fase do Ciclo Vital</h3>
-                        <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
-                                <span class="text-indigo-600 font-bold text-sm">IV</span>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800 tracking-tight leading-snug">Família com Adolescentes e Idoso Dependente</p>
-                                <p class="text-xs text-slate-500 mt-1 italic leading-relaxed">Momento de alta demanda afetiva e física, conhecido como "Geração Sanduíche".</p>
-                            </div>
+                        <div class="flex justify-between items-center border-b pb-2 text-sm">
+                            <span class="text-slate-600">Doença Crónica (HAS/DM2)</span>
+                            <span class="font-bold text-indigo-600">+2</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b pb-2 text-sm">
+                            <span class="text-slate-600">Drogadição (Tabagismo João)</span>
+                            <span class="font-bold text-indigo-600">+2</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 text-sm">
+                            <span class="text-slate-600">Deficiência Funcional (Demência)</span>
+                            <span class="font-bold text-indigo-600">+3</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Plano Terapêutico Singular (PTS) -->
-                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 italic">Plano Terapêutico Singular (PTS)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <h4 class="text-sm font-black text-indigo-600 uppercase mb-3">Maria de Fátima</h4>
-                            <ul class="text-xs text-slate-600 space-y-2">
-                                <li class="flex gap-2"><span>•</span> Higiene do sono e manejo do estresse cardiovascular.</li>
-                                <li class="flex gap-2"><span>•</span> Encaminhamento para grupo de apoio a cuidadores.</li>
-                                <li class="flex gap-2"><span>•</span> Negociar com João/Lucas a supervisão das refeições da avó.</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-black text-indigo-600 uppercase mb-3">João Carlos</h4>
-                            <ul class="text-xs text-slate-600 space-y-2">
-                                <li class="flex gap-2"><span>•</span> Programa de Cessação de Tabagismo (Apoio motivacional).</li>
-                                <li class="flex gap-2"><span>•</span> Incentivo à atividade física leve (Caminhadas após o trabalho).</li>
-                                <li class="flex gap-2"><span>•</span> Apoio na aplicação da insulina noturna para D. Helena.</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-black text-indigo-600 uppercase mb-3">Dona Helena</h4>
-                            <ul class="text-xs text-slate-600 space-y-2">
-                                <li class="flex gap-2"><span>•</span> Monitorização glicémica e prevenção de quedas (VD do ACS).</li>
-                                <li class="flex gap-2"><span>•</span> Revisão de rotina pela Enfermagem (Puericultura ao contrário).</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-black text-indigo-600 uppercase mb-3">Ana Clara</h4>
-                            <ul class="text-xs text-slate-600 space-y-2">
-                                <li class="flex gap-2"><span>•</span> Mediação de conversa familiar sobre privacidade e autonomia.</li>
-                            </ul>
-                        </div>
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 italic">Plano Terapêutico (PTS)</h3>
+                    <div class="space-y-4 text-xs leading-relaxed text-slate-600">
+                        <p><strong>Maria:</strong> Focar na prevenção do Burnout do Cuidador e monitorização da PA.</p>
+                        <p><strong>João:</strong> Incentivo à cessação tabágica e maior envolvimento no cuidado noturno da sogra.</p>
+                        <p><strong>D. Helena:</strong> VD periódica do ACS para vigilância glicémica e risco de quedas.</p>
+                        <p><strong>Ana Clara:</strong> Espaço para escuta e mediação de conflitos sobre privacidade no quarto.</p>
                     </div>
                 </div>
             </div>
+        </section>
+    </main>
 
-            <!-- Tabela de Sentinelas (Apoio Académico) -->
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 overflow-x-auto">
-                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Detalhamento das Sentinelas (Escore = 8)</h3>
-                <table class="w-full text-left text-xs border-collapse">
-                    <thead>
-                        <tr class="border-b border-slate-100 text-slate-400 uppercase font-black">
-                            <th class="py-3 px-2">Sentinela</th>
-                            <th class="py-3 px-2">Critério Observado</th>
-                            <th class="py-3 px-2 text-right">Pontos</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-slate-600">
-                        <tr class="border-b border-slate-50">
-                            <td class="py-3 px-2 font-bold">Maior de 70 anos</td>
-                            <td class="py-3 px-2 italic">Dona Helena (78 anos)</td>
-                            <td class="py-3 px-2 text-right font-black">1</td>
-                        </tr>
-                        <tr class="border-b border-slate-50">
-                            <td class="py-3 px-2 font-bold">Hipertensão Arterial</td>
-                            <td class="py-3 px-2 italic">Maria e João (Diagnosticados/Risco)</td>
-                            <td class="py-3 px-2 text-right font-black">1</td>
-                        </tr>
-                        <tr class="border-b border-slate-50">
-                            <td class="py-3 px-2 font-bold">Diabetes Mellitus</td>
-                            <td class="py-3 px-2 italic">Dona Helena (Insulino-dependente)</td>
-                            <td class="py-3 px-
+    <script>
+        // Função Unificada de Navegação
+        function switchTab(tabId) {
+            // Ocultar todas as seções
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Mostrar a seção alvo com verificação de segurança
+            const targetSection = document.getElementById('tab-' + tabId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+
+            // Atualizar estilo dos botões
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active-tab');
+                btn.classList.add('text-slate-500');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active-tab');
+                activeBtn.classList.remove('text-slate-500');
+            }
+
+            // Ações específicas
+            if (tabId === 'ecomapa') {
+                filterEcomapa('geral');
+            }
+        }
+
+        const resources = [
+            { id: 'usf', name: 'USF / ACS', x: 400, y: 80, type: 'strong', color: '#0ea5e9', sub: 'Saúde' },
+            { id: 'escola', name: 'ESCOLA', x: 120, y: 450, type: 'strong', color: '#f59e0b', sub: 'Ana' },
+            { id: 'igreja', name: 'IGREJA', x: 680, y: 450, type: 'strong', color: '#8b5cf6', sub: 'Maria' },
+            { id: 'trabalho', name: 'TRABALHO', x: 400, y: 520, type: 'stress', color: '#ef4444', sub: 'João' },
+            { id: 'neuro', name: 'NEURO', x: 120, y: 150, type: 'weak', color: '#64748b', sub: 'Helena' },
+            { id: 'carla', name: 'CARLA', x: 680, y: 150, type: 'weak', color: '#64748b', sub: 'Prima' }
+        ];
+
+        const userMaps = {
+            geral: ['usf', 'escola', 'igreja', 'trabalho', 'neuro', 'carla'],
+            maria: ['usf', 'igreja', 'neuro', 'carla'],
+            joao: ['usf', 'trabalho'],
+            ana: ['usf', 'escola']
+        };
+
+        function filterEcomapa(user) {
+            const svg = document.getElementById('ecomapa-svg');
+            if (!svg) return;
+            svg.innerHTML = '';
+
+            // Desenhar Centro
+            svg.innerHTML += `
+                <circle cx="400" cy="300" r="75" fill="#f8fafc" stroke="#4f46e5" stroke-width="4" />
+                <text x="400" y="305" text-anchor="middle" font-size="14" font-weight="900" fill="#1e1b4b" class="uppercase">${user === 'geral' ? 'FAMÍLIA SANTOS' : user}</text>
+            `;
+
+            resources.forEach(res => {
+                if (userMaps[user].includes(res.id)) {
+                    const midX = (400 + res.x) / 2;
+                    const midY = (300 + res.y) / 2;
+                    
+                    if (res.type === 'stress') {
+                        svg.innerHTML += `<path d="M 400 300 L ${res.x} ${res.y}" stroke="#ef4444" stroke-width="2" />`;
+                        svg.innerHTML += `<path d="M ${midX-10} ${midY-5} l 5 10 l 5 -10 l 5 10" stroke="#ef4444" stroke-width="2" fill="none" />`;
+                    } else {
+                        let strokeAttr = `stroke="${res.type === 'strong' ? '#4f46e5' : '#94a3b8'}" stroke-width="${res.type === 'strong' ? 4 : 2}"`;
+                        if (res.type === 'weak') strokeAttr += ' stroke-dasharray="6 4"';
+                        svg.innerHTML += `<line x1="400" y1="300" x2="${res.x}" y2="${res.y}" ${strokeAttr} />`;
+                    }
+                    
+                    svg.innerHTML += `
+                        <g transform="translate(${res.x}, ${res.y})">
+                            <circle r="42" fill="white" stroke="${res.color}" stroke-width="2" />
+                            <text y="-5" text-anchor="middle" font-size="10" font-weight="bold">${res.name}</text>
+                            <text y="10" text-anchor="middle" font-size="8" fill="#94a3b8">${res.sub}</text>
+                        </g>
+                    `;
+                }
+            });
+
+            // Atualizar estilo das subtabs
+            document.querySelectorAll('.subtab-btn').forEach(btn => btn.classList.remove('active-subtab'));
+            const subBtn = document.getElementById('sub-' + user);
+            if (subBtn) subBtn.classList.add('active-subtab');
+        }
+
+        // Inicializar na aba de Genograma
+        window.onload = () => {
+            switchTab('genograma');
+        };
+    </script>
+</body>
+</html>
+
+
