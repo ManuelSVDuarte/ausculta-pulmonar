@@ -12,6 +12,7 @@
         .active-subtab { background-color: #4f46e5 !important; color: white !important; }
         .svg-container { min-width: 800px; }
         @media (max-width: 768px) { .svg-container { min-width: 700px; } }
+        svg { max-width: 100%; height: auto; }
     </style>
 </head>
 <body class="bg-slate-50 p-4 md:p-8 font-sans text-slate-900">
@@ -20,7 +21,7 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Família Santos</h1>
-                <p class="text-slate-500 text-sm italic">Ferramentas de Abordagem Familiar - Caso Clínico</p>
+                <p class="text-slate-500 text-sm italic">Ferramentas de Abordagem Familiar - Medicina</p>
             </div>
             <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner">
                 <button onclick="switchTab('genograma')" id="btn-genograma" class="tab-btn px-6 py-2 rounded-xl text-sm font-bold active-tab transition-all">Genograma</button>
@@ -33,11 +34,11 @@
     <main class="max-w-6xl mx-auto">
         <!-- SECÇÃO GENOGRAMA -->
         <section id="tab-genograma" class="content-section bg-white p-8 rounded-3xl shadow-md border border-slate-200 overflow-x-auto relative">
-            <h2 class="text-lg font-bold text-slate-700 italic mb-6">Genograma Multigeracional (Padrão Académico)</h2>
+            <h2 class="text-lg font-bold text-slate-700 italic mb-6">Genograma Multigeracional</h2>
             
             <div class="svg-container relative">
-                <svg viewBox="0 0 850 550" class="w-full h-auto">
-                    <!-- Estrutura Multigeracional -->
+                <svg viewBox="0 0 850 550" class="w-full">
+                    <!-- Conexões Estruturais -->
                     <line x1="250" y1="80" x2="400" y2="80" stroke="#94a3b8" stroke-width="2" />
                     <line x1="325" y1="80" x2="325" y2="150" stroke="#94a3b8" stroke-width="2" />
                     <line x1="325" y1="150" x2="550" y2="150" stroke="#94a3b8" stroke-width="2" />
@@ -72,7 +73,7 @@
                         <text y="40" text-anchor="middle" font-size="11" font-weight="bold">Maria (P. Índice)</text>
                     </g>
 
-                    <!-- G3: Filhos -->
+                    <!-- G3 -->
                     <line x1="475" y1="250" x2="475" y2="320" stroke="#94a3b8" stroke-width="2" />
                     <line x1="350" y1="320" x2="600" y2="320" stroke="#94a3b8" stroke-width="2" />
                     <line x1="350" y1="320" x2="350" y2="380" stroke="#94a3b8" stroke-width="2" />
@@ -90,10 +91,10 @@
                         <text y="40" text-anchor="middle" font-size="11" font-weight="bold">Ana Clara</text>
                     </g>
 
-                    <!-- Relações -->
-                    <path d="M 430 220 Q 475 200 520 220" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2 2" />
-                    <path d="M 580 360 L 420 110" stroke="#ef4444" stroke-width="1" stroke-dasharray="5 3" />
-                    <path d="M 550 210 L 400 100" stroke="#4f46e5" stroke-width="3" opacity="0.4" />
+                    <!-- Vínculos Dinâmicos -->
+                    <path d="M 430 220 Q 475 200 520 220" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2 2" /> <!-- Estresse -->
+                    <path d="M 580 360 L 420 110" stroke="#ef4444" stroke-width="1" stroke-dasharray="5 3" /> <!-- Distanciamento -->
+                    <path d="M 550 210 L 400 100" stroke="#4f46e5" stroke-width="3" opacity="0.4" /> <!-- Cuidadora -->
 
                     <!-- Coabitação -->
                     <rect x="220" y="40" width="480" height="460" fill="none" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="12 6" rx="20" />
@@ -126,7 +127,7 @@
                             </div>
                             <div class="flex items-center gap-3">
                                 <div class="w-5 h-0.5 border-t border-dashed border-red-500"></div>
-                                <span class="text-[10px] font-bold text-slate-700">Conflito / Estresse</span>
+                                <span class="text-[10px] font-bold text-slate-700 italic">Estresse / Conflito</span>
                             </div>
                         </div>
                     </div>
@@ -151,20 +152,21 @@
             <div class="svg-container relative">
                 <svg viewBox="0 0 800 600" class="w-full h-auto" id="ecomapa-svg"></svg>
                 
-                <div class="absolute top-0 left-0 bg-white/95 p-4 rounded-2xl border border-slate-200 shadow-xl backdrop-blur-md max-w-[180px]">
+                <!-- LEGENDA ECOMAPA -->
+                <div class="absolute top-0 left-0 bg-white/95 p-4 rounded-2xl border border-slate-200 shadow-xl backdrop-blur-md max-w-[200px] z-20">
                     <h4 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-3">Legenda Ecomapa</h4>
                     <div class="space-y-3">
                         <div class="flex items-center gap-3">
                             <div class="w-6 h-1 bg-indigo-600 rounded-full"></div>
-                            <span class="text-[10px] font-bold text-slate-700">Apoio Forte</span>
+                            <span class="text-[10px] font-bold text-slate-700 uppercase tracking-tight">Vínculo Forte</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="w-6 h-0.5 border-t border-dashed border-slate-400"></div>
-                            <span class="text-[10px] font-bold text-slate-700">Fraco / Pontual</span>
+                            <div class="w-6 h-0.5 border-t-2 border-dashed border-slate-400"></div>
+                            <span class="text-[10px] font-bold text-slate-700 uppercase tracking-tight">Vínculo Fraco</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="text-red-500 font-bold text-lg leading-none">〰</div>
-                            <span class="text-[10px] font-bold text-slate-700">Risco / Stress</span>
+                            <div class="w-6 h-1 bg-red-500 rounded-full"></div>
+                            <span class="text-[10px] font-bold text-slate-700 uppercase tracking-tight">Fator de Estresse</span>
                         </div>
                     </div>
                 </div>
@@ -176,45 +178,44 @@
             <div class="bg-indigo-900 text-white p-8 rounded-[2.5rem] shadow-2xl flex flex-col md:flex-row justify-between items-center gap-6">
                 <div>
                     <h2 class="text-2xl font-black uppercase tracking-tighter mb-1 italic">Escala de Vulnerabilidade</h2>
-                    <p class="text-indigo-200 text-sm">Cálculo de sentinelas conforme as diretrizes da APS.</p>
+                    <p class="text-indigo-200 text-sm italic">Análise de sentinelas para acompanhamento da APS.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-xl p-4 rounded-3xl border border-white/20 text-center min-w-[160px]">
                     <span class="block text-xs uppercase font-bold text-indigo-300 mb-1 tracking-widest">Escore</span>
                     <span class="text-5xl font-black">08</span>
-                    <span class="block text-[10px] mt-1 font-bold bg-amber-500 text-white px-3 py-1 rounded-full uppercase">Risco Médio</span>
+                    <span class="block text-[10px] mt-1 font-bold bg-amber-500 text-white px-3 py-1 rounded-full uppercase tracking-tight">Risco Médio</span>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 italic">Análise de Risco (Sentinelas)</h3>
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 italic">Sentinelas Observadas</h3>
                     <div class="space-y-3">
                         <div class="flex justify-between items-center border-b pb-2 text-sm">
-                            <span class="text-slate-600">Maior de 70 anos (D. Helena)</span>
+                            <span class="text-slate-600 italic">D. Helena (> 70 anos)</span>
                             <span class="font-bold text-indigo-600">+1</span>
                         </div>
                         <div class="flex justify-between items-center border-b pb-2 text-sm">
-                            <span class="text-slate-600">Doença Crónica (HAS/DM2)</span>
+                            <span class="text-slate-600 italic">Doença Crónica (HAS/DM2)</span>
                             <span class="font-bold text-indigo-600">+2</span>
                         </div>
                         <div class="flex justify-between items-center border-b pb-2 text-sm">
-                            <span class="text-slate-600">Drogadição (Tabagismo João)</span>
+                            <span class="text-slate-600 italic">Tabagismo (João Carlos)</span>
                             <span class="font-bold text-indigo-600">+2</span>
                         </div>
                         <div class="flex justify-between items-center pb-2 text-sm">
-                            <span class="text-slate-600">Deficiência Funcional (Demência)</span>
+                            <span class="text-slate-600 italic">Dependência (Demência)</span>
                             <span class="font-bold text-indigo-600">+3</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 italic">Plano Terapêutico (PTS)</h3>
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 italic">Intervenções (PTS)</h3>
                     <div class="space-y-4 text-xs leading-relaxed text-slate-600">
-                        <p><strong>Maria:</strong> Focar na prevenção do Burnout do Cuidador e monitorização da PA.</p>
-                        <p><strong>João:</strong> Incentivo à cessação tabágica e maior envolvimento no cuidado noturno da sogra.</p>
-                        <p><strong>D. Helena:</strong> VD periódica do ACS para vigilância glicémica e risco de quedas.</p>
-                        <p><strong>Ana Clara:</strong> Espaço para escuta e mediação de conflitos sobre privacidade no quarto.</p>
+                        <p><strong>Foco Maria:</strong> Prevenção de burnout e suporte emocional.</p>
+                        <p><strong>Foco João:</strong> Abordagem motivacional para cessação tabágica.</p>
+                        <p><strong>Vigilância:</strong> Visitas do ACS para monitorar segurança de D. Helena.</p>
                     </div>
                 </div>
             </div>
@@ -222,41 +223,30 @@
     </main>
 
     <script>
-        // Função Unificada de Navegação
+        // Gestão de Abas
         function switchTab(tabId) {
-            // Ocultar todas as seções
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.add('hidden');
-            });
+            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById('tab-' + tabId);
+            if(target) target.classList.remove('hidden');
 
-            // Mostrar a seção alvo com verificação de segurança
-            const targetSection = document.getElementById('tab-' + tabId);
-            if (targetSection) {
-                targetSection.classList.remove('hidden');
-            }
-
-            // Atualizar estilo dos botões
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active-tab');
                 btn.classList.add('text-slate-500');
             });
             const activeBtn = document.getElementById('btn-' + tabId);
-            if (activeBtn) {
+            if(activeBtn) {
                 activeBtn.classList.add('active-tab');
                 activeBtn.classList.remove('text-slate-500');
             }
 
-            // Ações específicas
-            if (tabId === 'ecomapa') {
-                filterEcomapa('geral');
-            }
+            if(tabId === 'ecomapa') filterEcomapa('geral');
         }
 
         const resources = [
             { id: 'usf', name: 'USF / ACS', x: 400, y: 80, type: 'strong', color: '#0ea5e9', sub: 'Saúde' },
             { id: 'escola', name: 'ESCOLA', x: 120, y: 450, type: 'strong', color: '#f59e0b', sub: 'Ana' },
             { id: 'igreja', name: 'IGREJA', x: 680, y: 450, type: 'strong', color: '#8b5cf6', sub: 'Maria' },
-            { id: 'trabalho', name: 'TRABALHO', x: 400, y: 520, type: 'stress', color: '#ef4444', sub: 'João' },
+            { id: 'trabalho', name: 'TRABALHO', x: 400, y: 520, type: 'stress', color: '#ef4444', sub: 'João' }, // Linha Vermelha Sólida
             { id: 'neuro', name: 'NEURO', x: 120, y: 150, type: 'weak', color: '#64748b', sub: 'Helena' },
             { id: 'carla', name: 'CARLA', x: 680, y: 150, type: 'weak', color: '#64748b', sub: 'Prima' }
         ];
@@ -270,29 +260,35 @@
 
         function filterEcomapa(user) {
             const svg = document.getElementById('ecomapa-svg');
-            if (!svg) return;
+            if(!svg) return;
             svg.innerHTML = '';
 
-            // Desenhar Centro
+            // Círculo Central
             svg.innerHTML += `
                 <circle cx="400" cy="300" r="75" fill="#f8fafc" stroke="#4f46e5" stroke-width="4" />
                 <text x="400" y="305" text-anchor="middle" font-size="14" font-weight="900" fill="#1e1b4b" class="uppercase">${user === 'geral' ? 'FAMÍLIA SANTOS' : user}</text>
             `;
 
             resources.forEach(res => {
-                if (userMaps[user].includes(res.id)) {
-                    const midX = (400 + res.x) / 2;
-                    const midY = (300 + res.y) / 2;
-                    
-                    if (res.type === 'stress') {
-                        svg.innerHTML += `<path d="M 400 300 L ${res.x} ${res.y}" stroke="#ef4444" stroke-width="2" />`;
-                        svg.innerHTML += `<path d="M ${midX-10} ${midY-5} l 5 10 l 5 -10 l 5 10" stroke="#ef4444" stroke-width="2" fill="none" />`;
-                    } else {
-                        let strokeAttr = `stroke="${res.type === 'strong' ? '#4f46e5' : '#94a3b8'}" stroke-width="${res.type === 'strong' ? 4 : 2}"`;
-                        if (res.type === 'weak') strokeAttr += ' stroke-dasharray="6 4"';
-                        svg.innerHTML += `<line x1="400" y1="300" x2="${res.x}" y2="${res.y}" ${strokeAttr} />`;
+                if(userMaps[user].includes(res.id)) {
+                    // Linhas de Vínculo
+                    let strokeColor = "#94a3b8";
+                    let strokeWidth = 2;
+                    let strokeDash = "none";
+
+                    if(res.type === 'strong') {
+                        strokeColor = "#4f46e5";
+                        strokeWidth = 4;
+                    } else if(res.type === 'weak') {
+                        strokeDash = "6 4";
+                    } else if(res.type === 'stress') {
+                        strokeColor = "#ef4444"; // Vermelho sólido para Fator de Estresse
+                        strokeWidth = 3;
                     }
+
+                    svg.innerHTML += `<line x1="400" y1="300" x2="${res.x}" y2="${res.y}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDash}" />`;
                     
+                    // Nó Externo
                     svg.innerHTML += `
                         <g transform="translate(${res.x}, ${res.y})">
                             <circle r="42" fill="white" stroke="${res.color}" stroke-width="2" />
@@ -303,18 +299,17 @@
                 }
             });
 
-            // Atualizar estilo das subtabs
+            // Estilo dos botões de filtro
             document.querySelectorAll('.subtab-btn').forEach(btn => btn.classList.remove('active-subtab'));
             const subBtn = document.getElementById('sub-' + user);
-            if (subBtn) subBtn.classList.add('active-subtab');
+            if(subBtn) subBtn.classList.add('active-subtab');
         }
 
-        // Inicializar na aba de Genograma
-        window.onload = () => {
+        // Início
+        window.addEventListener('DOMContentLoaded', () => {
             switchTab('genograma');
-        };
+        });
     </script>
 </body>
 </html>
-
 
