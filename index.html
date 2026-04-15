@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -125,7 +126,7 @@
         <p id="question-count">Questão 1 de 8</p>
         <h2>Qual som é este?</h2>
         
-        <button class="audio-btn" onclick="playAudio()">
+        <button class="audio-btn" onclick="playAudio()" title="Ouvir som">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
         </button>
         
@@ -144,10 +145,10 @@
 </div>
 
 <script>
-    // Lista atualizada com os nomes dos arquivos enviados
+    // Lista de arquivos com a extensão .m4a e nomes exatos
     const baseSounds = [
         { file: 'atrito pleural.m4a', name: 'Atrito Pleural' },
-        { file: 'estertor grosso.m4d', name: 'Estertor Grosso' },
+        { file: 'estertor grosso.m4a', name: 'Estertor Grosso' },
         { file: 'estertor fino.m4a', name: 'Estertor Fino' },
         { file: 'ESTRIDOR.m4a', name: 'Estridor' },
         { file: 'SIBILO.m4a', name: 'Sibilo' },
@@ -159,7 +160,6 @@
     let currentIdx = 0;
     let score = 0;
     let quizList = [];
-    // O total agora é baseado na quantidade de arquivos (8)
     const TOTAL_QUESTOES = baseSounds.length;
 
     function shuffle(array) {
@@ -171,7 +171,7 @@
     }
 
     function initQuiz() {
-        // Embaralha os sons disponíveis
+        // Embaralha a lista original para o quiz
         quizList = shuffle([...baseSounds]);
         showQuestion();
     }
@@ -180,7 +180,7 @@
         const q = quizList[currentIdx];
         const audio = document.getElementById('audio-player');
         
-        // Define o arquivo (o navegador tentará carregar o arquivo local com esse nome)
+        // Atualiza a fonte do áudio
         audio.src = q.file;
         audio.load();
         
@@ -190,7 +190,7 @@
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
         
-        // Gera alternativas: a correta + 3 aleatórias dos outros sons
+        // Gera alternativas: a correta + 3 erradas aleatórias
         const distractors = baseSounds.filter(s => s.name !== q.name).map(s => s.name);
         shuffle(distractors);
         const choices = shuffle([q.name, ...distractors.slice(0, 3)]);
@@ -199,47 +199,5 @@
             const btn = document.createElement('button');
             btn.className = 'option';
             btn.innerText = choice;
-            btn.onclick = () => checkAnswer(choice, q.name, btn);
-            optionsDiv.appendChild(btn);
-        });
-        
-        document.getElementById('next-btn').classList.add('hidden');
-    }
+            btn.onclick = () => checkAnswer(
 
-    function playAudio() {
-        const audio = document.getElementById('audio-player');
-        audio.currentTime = 0;
-        audio.play().catch(e => console.error("Erro ao reproduzir áudio:", e));
-    }
-
-    function checkAnswer(selected, correct, btn) {
-        const allBtns = document.querySelectorAll('.option');
-        allBtns.forEach(b => b.disabled = true);
-        
-        if (selected === correct) {
-            btn.classList.add('correct');
-            score++;
-        } else {
-            btn.classList.add('wrong');
-            allBtns.forEach(b => {
-                if (b.innerText === correct) b.classList.add('correct');
-            });
-        }
-        document.getElementById('next-btn').classList.remove('hidden');
-    }
-
-    function nextQuestion() {
-        currentIdx++;
-        if (currentIdx < TOTAL_QUESTOES) {
-            showQuestion();
-        } else {
-            document.getElementById('game-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `Resultado: Acertou ${score} de ${TOTAL_QUESTOES} auscultas.`;
-        }
-    }
-
-    window.onload = initQuiz;
-</script>
-</body>
-</html>
