@@ -122,7 +122,7 @@
     <div class="progress-bar"><div id="progress"></div></div>
     
     <div id="game-screen">
-        <p id="question-count">Questão 1 de 12</p>
+        <p id="question-count">Questão 1 de 8</p>
         <h2>Qual som é este?</h2>
         
         <button class="audio-btn" onclick="playAudio()">
@@ -144,19 +144,23 @@
 </div>
 
 <script>
+    // Lista atualizada com os nomes dos arquivos enviados
     const baseSounds = [
-        { file: 'Estertor_grosso.wav', name: 'Estertor grosso (bolhoso)' },
-        { file: 'Estertor_fino.wav', name: 'Estertor fino (crepitação)' },
-        { file: 'ronco.wav', name: 'Ronco' },
-        { file: 'Murmurio_vesicular.wav', name: 'Murmúrio vesicular' },
-        { file: 'estridor.wav', name: 'Estridor' },
-        { file: 'sibilo.wav', name: 'Sibilo' }
+        { file: 'atrito pleural', name: 'Atrito Pleural' },
+        { file: 'estertor grosso', name: 'Estertor Grosso' },
+        { file: 'estertor fino', name: 'Estertor Fino' },
+        { file: 'ESTRIDOR', name: 'Estridor' },
+        { file: 'SIBILO', name: 'Sibilo' },
+        { file: 'SOM BRONCOVESICULAR', name: 'Som Broncovesicular' },
+        { file: 'SOM BRÔNQUICO', name: 'Som Brônquico' },
+        { file: 'Murmúrio vesicular', name: 'Murmúrio Vesicular' }
     ];
 
     let currentIdx = 0;
     let score = 0;
     let quizList = [];
-    const TOTAL_QUESTOES = 12;
+    // O total agora é baseado na quantidade de arquivos (8)
+    const TOTAL_QUESTOES = baseSounds.length;
 
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -167,8 +171,8 @@
     }
 
     function initQuiz() {
-        // Dobra os 6 sons para criar as 12 questões
-        quizList = shuffle([...baseSounds, ...baseSounds]);
+        // Embaralha os sons disponíveis
+        quizList = shuffle([...baseSounds]);
         showQuestion();
     }
 
@@ -176,6 +180,7 @@
         const q = quizList[currentIdx];
         const audio = document.getElementById('audio-player');
         
+        // Define o arquivo (o navegador tentará carregar o arquivo local com esse nome)
         audio.src = q.file;
         audio.load();
         
@@ -185,6 +190,7 @@
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
         
+        // Gera alternativas: a correta + 3 aleatórias dos outros sons
         const distractors = baseSounds.filter(s => s.name !== q.name).map(s => s.name);
         shuffle(distractors);
         const choices = shuffle([q.name, ...distractors.slice(0, 3)]);
@@ -203,7 +209,7 @@
     function playAudio() {
         const audio = document.getElementById('audio-player');
         audio.currentTime = 0;
-        audio.play();
+        audio.play().catch(e => console.error("Erro ao reproduzir áudio:", e));
     }
 
     function checkAnswer(selected, correct, btn) {
@@ -237,4 +243,3 @@
 </script>
 </body>
 </html>
-```
