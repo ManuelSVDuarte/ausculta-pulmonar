@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,8 @@
         .audio-btn { width: 100px; height: 100px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; margin: 1.5rem 0; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
         .audio-btn:hover { transform: scale(1.05); }
         .options-grid { display: grid; gap: 12px; margin-top: 1.5rem; }
-        .option { padding: 15px; border: 2px solid #e2e8f0; border-radius: 14px; background: none; cursor: pointer; font-weight: 600; text-align: left; }
+        .option { padding: 15px; border: 2px solid #e2e8f0; border-radius: 14px; background: none; cursor: pointer; font-weight: 600; text-align: left; transition: 0.2s; }
+        .option:hover:not(:disabled) { border-color: var(--primary); background: #f1f5f9; }
         .correct { background: #dcfce7 !important; border-color: var(--success) !important; color: #166534 !important; }
         .wrong { background: #fee2e2 !important; border-color: var(--error) !important; color: #991b1b !important; }
         .hidden { display: none; }
@@ -26,7 +27,7 @@
 <div class="container">
     <div class="progress-bar"><div id="progress"></div></div>
     <div id="game-screen">
-        <p id="question-count">Questão 1 de 8</p>
+        <p id="question-count">Carregando...</p>
         <h2>Qual som é este?</h2>
         <button class="audio-btn" onclick="playAudio()">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
@@ -38,12 +39,11 @@
     <div id="result-screen" class="hidden">
         <h2>Treino Concluído</h2>
         <p id="score-text"></p>
-        <button class="btn-next" onclick="location.reload()">Refazer</button>
+        <button class="btn-next" onclick="location.reload()">Refazer Treino</button>
     </div>
 </div>
 
 <script>
-    // LISTA DE SONS - Ajustada com base nos nomes exatos dos arquivos
     const baseSounds = [
         { file: 'atrito pleural.m4a', name: 'Atrito Pleural' },
         { file: 'estertor grosso.m4a', name: 'Estertor Grosso' },
@@ -59,8 +59,22 @@
     let score = 0;
     let quizList = [];
 
+    // Função para embaralhar qualquer array (Fisher-Yates)
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     function initQuiz() {
-        quizList = [...baseSounds].sort(() => Math.random() - 0.5);
+        // 1. Repete a lista 3 vezes
+        quizList = [...baseSounds, ...baseSounds, ...baseSounds];
+        
+        // 2. Embaralha a lista completa
+        shuffle(quizList);
+        
         showQuestion();
     }
 
@@ -70,12 +84,25 @@
         audio.src = q.file;
         audio.load();
         
-        document.getElementById('question-count').innerText = `Questão ${currentIdx + 1} de 8`;
-        document.getElementById('progress').style.width = `${((currentIdx + 1) / 8) * 100}%`;
+        // Atualiza contadores
+        const total = quizList.length;
+        document.getElementById('question-count').innerText = `Questão ${currentIdx + 1} de ${total}`;
+        document.getElementById('progress').style.width = `${((currentIdx + 1) / total) * 100}%`;
         
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
-        const choices = [q.name, ...baseSounds.filter(s => s.name !== q.name).map(s => s.name).sort(() => Math.random() - 0.5).slice(0, 3)].sort();
+
+        // Cria alternativas (1 correta + 3 erradas aleatórias)
+        let choices = [q.name];
+        let wrongOptions = baseSounds
+            .filter(s => s.name !== q.name)
+            .map(s => s.name);
+        
+        shuffle(wrongOptions);
+        choices.push(...wrongOptions.slice(0, 3));
+        
+        // Embaralha a ordem das alternativas
+        shuffle(choices);
 
         choices.forEach(choice => {
             const btn = document.createElement('button');
@@ -84,6 +111,7 @@
             btn.onclick = () => checkAnswer(choice, q.name, btn);
             optionsDiv.appendChild(btn);
         });
+        
         document.getElementById('next-btn').classList.add('hidden');
     }
 
@@ -91,25 +119,34 @@
         const audio = document.getElementById('audio-player');
         audio.currentTime = 0;
         audio.play().catch(e => {
-            alert("ERRO DE ÁUDIO!\nO navegador tentou tocar: " + audio.src + "\n\nVerifique se o nome do arquivo na pasta é EXATAMENTE esse (incluindo espaços e .m4a)");
+            console.error("Erro ao tocar áudio:", e);
         });
     }
 
     function checkAnswer(selected, correct, btn) {
         const allBtns = document.querySelectorAll('.option');
         allBtns.forEach(b => b.disabled = true);
-        if (selected === correct) { btn.classList.add('correct'); score++; }
-        else { btn.classList.add('wrong'); allBtns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); }); }
+        
+        if (selected === correct) { 
+            btn.classList.add('correct'); 
+            score++; 
+        } else { 
+            btn.classList.add('wrong'); 
+            allBtns.forEach(b => { 
+                if(b.innerText === correct) b.classList.add('correct'); 
+            }); 
+        }
         document.getElementById('next-btn').classList.remove('hidden');
     }
 
     function nextQuestion() {
         currentIdx++;
-        if (currentIdx < 8) showQuestion();
-        else {
+        if (currentIdx < quizList.length) {
+            showQuestion();
+        } else {
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `Você acertou ${score} de 8!`;
+            document.getElementById('score-text').innerText = `Você acertou ${score} de ${quizList.length}!`;
         }
     }
 
