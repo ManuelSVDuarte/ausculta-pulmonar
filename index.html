@@ -1,65 +1,110 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Treino de Ausculta Pulmonar</title>
+    <title>Simulado de Diagnóstico Pulmonar</title>
     <style>
-        :root { --primary: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --success: #22c55e; --error: #ef4444; }
-        body { font-family: sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background: var(--card); width: 100%; max-width: 450px; padding: 2.5rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); text-align: center; }
-        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 10px; margin-bottom: 2rem; overflow: hidden; }
+        :root { --primary: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --success: #22c55e; --error: #ef4444; --accent: #6366f1; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background: var(--card); width: 100%; max-width: 550px; padding: 2rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 10px; margin-bottom: 1.5rem; overflow: hidden; }
         #progress { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
-        .audio-btn { width: 100px; height: 100px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; margin: 1.5rem 0; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
-        .audio-btn:hover { transform: scale(1.05); }
-        .options-grid { display: grid; gap: 12px; margin-top: 1.5rem; }
-        .option { padding: 15px; border: 2px solid #e2e8f0; border-radius: 14px; background: none; cursor: pointer; font-weight: 600; text-align: left; transition: 0.2s; }
-        .option:hover:not(:disabled) { border-color: var(--primary); background: #f1f5f9; }
+        
+        .case-box { background: #f1f5f9; border-left: 4px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 1.5rem; text-align: left; font-size: 0.95rem; line-height: 1.5; }
+        .case-title { font-weight: bold; color: var(--primary); display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8rem; }
+        
+        .audio-section { text-align: center; margin-bottom: 1.5rem; }
+        .audio-btn { width: 80px; height: 80px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
+        .audio-btn:hover { transform: scale(1.05); background: var(--accent); }
+        
+        .options-grid { display: grid; gap: 10px; }
+        .option { padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; cursor: pointer; font-weight: 600; text-align: left; transition: 0.2s; font-size: 0.9rem; }
+        .option:hover:not(:disabled) { border-color: var(--primary); background: #f8fafc; }
         .correct { background: #dcfce7 !important; border-color: var(--success) !important; color: #166534 !important; }
         .wrong { background: #fee2e2 !important; border-color: var(--error) !important; color: #991b1b !important; }
+        
         .hidden { display: none; }
-        .btn-next { margin-top: 2rem; width: 100%; padding: 16px; background: #1e293b; color: white; border: none; border-radius: 14px; cursor: pointer; font-weight: bold; }
-        h2 { margin: 0 0 0.5rem 0; }
+        .btn-next { margin-top: 1.5rem; width: 100%; padding: 14px; background: #1e293b; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        h2 { margin: 0 0 1rem 0; font-size: 1.4rem; text-align: center; }
+        .feedback { margin-top: 10px; font-weight: bold; font-size: 0.9rem; min-height: 1.2rem; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="progress-bar"><div id="progress"></div></div>
+    
     <div id="game-screen">
-        <p id="question-count">Carregando...</p>
-        <h2>Qual som é este?</h2>
-        <button class="audio-btn" onclick="playAudio()">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-        </button>
+        <p id="question-count" style="text-align: center; font-weight: bold; color: #64748b;"></p>
+        <h2>Caso Clínico</h2>
+        
+        <div id="case-description" class="case-box">
+            <span class="case-title">Exame Físico:</span>
+            <span id="case-text"></span>
+        </div>
+
+        <div class="audio-section">
+            <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 8px;">Ouça a ausculta deste paciente:</p>
+            <button class="audio-btn" onclick="playAudio()">
+                <svg width="35" height="35" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+        </div>
+
         <audio id="audio-player"></audio>
+        
         <div class="options-grid" id="options"></div>
-        <button id="next-btn" class="btn-next hidden" onclick="nextQuestion()">Próxima Ausculta ➡️</button>
+        <div id="feedback" class="feedback"></div>
+        
+        <button id="next-btn" class="btn-next hidden" onclick="nextQuestion()">Próximo Caso ➡️</button>
     </div>
-    <div id="result-screen" class="hidden">
-        <h2>Treino Concluído</h2>
-        <p id="score-text"></p>
-        <button class="btn-next" onclick="location.reload()">Refazer Treino</button>
+
+    <div id="result-screen" class="hidden" style="text-align: center;">
+        <h2>Simulado Concluído!</h2>
+        <p id="score-text" style="font-size: 1.2rem; margin-bottom: 1.5rem;"></p>
+        <button class="btn-next" onclick="location.reload()">Reiniciar Simulado</button>
     </div>
 </div>
 
 <script>
-    const baseSounds = [
-        { file: 'atrito pleural.m4a', name: 'Atrito Pleural' },
-        { file: 'estertor grosso.m4a', name: 'Estertor Grosso' },
-        { file: 'estertor fino.m4a', name: 'Estertor Fino' },
-        { file: 'ESTRIDOR.m4a', name: 'Estridor' },
-        { file: 'SIBILO.m4a', name: 'Sibilo' },
-        { file: 'SOM BRONCOVESICULAR.m4a', name: 'Som Broncovesicular' },
-        { file: 'SOM BRÔNQUICO.m4a', name: 'Som Brônquico' },
-        { file: 'Murmurio_vesicular.m4a', name: 'Murmúrio Vesicular' }
+    // Casos baseados no PDF fornecido
+    const cases = [
+        {
+            disease: 'Condensação (Pneumonia)',
+            description: 'Expansibilidade reduzida na área afetada. FTV aumentado. Percussão com macicez devido à substituição do ar por exsudato.',
+            audioFile: 'estertor fino.m4a', // Comum em pneumonias
+            tip: 'Achado típico: Broncofonia/Egofonia'
+        },
+        {
+            disease: 'DPOC (Hiperinsuflação)',
+            description: 'Tórax em tonel, expiração prolongada e uso de musculatura acessória. FTV diminuído e hipersonoridade na percussão.',
+            audioFile: 'SIBILO.m4a', 
+            tip: 'Passagem do ar por vias aéreas estreitadas.'
+        },
+        {
+            disease: 'Derrame Pleural',
+            description: 'Expansibilidade diminuída no lado afetado. FTV reduzido por afastamento das pleuras. Macicez na percussão.',
+            audioFile: 'Murmurio_vesicular.m4a', // MV reduzido (usando base disponível)
+            tip: 'Sinal do Menisco e possível atrito pleural no início.'
+        },
+        {
+            disease: 'Pneumotórax',
+            description: 'Assimetria torácica com pulmão colapsado. FTV reduzido (ar bloqueia vibração). Percussão com timpanismo.',
+            audioFile: 'Murmurio_vesicular.m4a', // MV abolido
+            tip: 'Desvio da traqueia para o lado oposto em casos de tensão.'
+        },
+        {
+            disease: 'Atelectasia',
+            description: 'Retração torácica com perda de volume pulmonar. FTV reduzido (ausência de ventilação). Percussão com macicez.',
+            audioFile: 'Murmurio_vesicular.m4a', // MV ausente
+            tip: 'Desvio da traqueia para o mesmo lado da lesão.'
+        }
     ];
 
     let currentIdx = 0;
     let score = 0;
     let quizList = [];
 
-    // Função para embaralhar qualquer array (Fisher-Yates)
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -69,46 +114,35 @@
     }
 
     function initQuiz() {
-        // 1. Repete a lista 3 vezes
-        quizList = [...baseSounds, ...baseSounds, ...baseSounds];
-        
-        // 2. Embaralha a lista completa
-        shuffle(quizList);
-        
+        quizList = shuffle([...cases]);
         showQuestion();
     }
 
     function showQuestion() {
         const q = quizList[currentIdx];
-        const audio = document.getElementById('audio-player');
-        audio.src = q.file;
-        audio.load();
+        document.getElementById('case-text').innerText = q.description;
+        document.getElementById('audio-player').src = q.audioFile;
+        document.getElementById('feedback').innerText = '';
         
-        // Atualiza contadores
         const total = quizList.length;
-        document.getElementById('question-count').innerText = `Questão ${currentIdx + 1} de ${total}`;
+        document.getElementById('question-count').innerText = `Paciente ${currentIdx + 1} de ${total}`;
         document.getElementById('progress').style.width = `${((currentIdx + 1) / total) * 100}%`;
         
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
 
-        // Cria alternativas (1 correta + 3 erradas aleatórias)
-        let choices = [q.name];
-        let wrongOptions = baseSounds
-            .filter(s => s.name !== q.name)
-            .map(s => s.name);
-        
-        shuffle(wrongOptions);
-        choices.push(...wrongOptions.slice(0, 3));
-        
-        // Embaralha a ordem das alternativas
+        // Alternativas
+        let choices = [q.disease];
+        let others = cases.filter(c => c.disease !== q.disease).map(c => c.disease);
+        shuffle(others);
+        choices.push(...others.slice(0, 3));
         shuffle(choices);
 
         choices.forEach(choice => {
             const btn = document.createElement('button');
             btn.className = 'option';
             btn.innerText = choice;
-            btn.onclick = () => checkAnswer(choice, q.name, btn);
+            btn.onclick = () => checkAnswer(choice, q.disease, btn, q.tip);
             optionsDiv.appendChild(btn);
         });
         
@@ -118,20 +152,24 @@
     function playAudio() {
         const audio = document.getElementById('audio-player');
         audio.currentTime = 0;
-        audio.play().catch(e => {
-            console.error("Erro ao tocar áudio:", e);
-        });
+        audio.play();
     }
 
-    function checkAnswer(selected, correct, btn) {
+    function checkAnswer(selected, correct, btn, tip) {
         const allBtns = document.querySelectorAll('.option');
         allBtns.forEach(b => b.disabled = true);
         
+        const feedbackDiv = document.getElementById('feedback');
+        
         if (selected === correct) { 
             btn.classList.add('correct'); 
+            feedbackDiv.style.color = "var(--success)";
+            feedbackDiv.innerText = "Correto! " + tip;
             score++; 
         } else { 
             btn.classList.add('wrong'); 
+            feedbackDiv.style.color = "var(--error)";
+            feedbackDiv.innerText = "Incorreto. O diagnóstico era " + correct;
             allBtns.forEach(b => { 
                 if(b.innerText === correct) b.classList.add('correct'); 
             }); 
@@ -146,7 +184,7 @@
         } else {
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `Você acertou ${score} de ${quizList.length}!`;
+            document.getElementById('score-text').innerText = `Diagnósticos corretos: ${score} de ${quizList.length}`;
         }
     }
 
