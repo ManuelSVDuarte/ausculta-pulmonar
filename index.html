@@ -3,27 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulado de Diagnóstico Pulmonar Avançado</title>
+    <title>Simulado: Identificação de Sons Pulmonares</title>
     <style>
-        :root { --primary: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --success: #22c55e; --error: #ef4444; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background: var(--card); width: 100%; max-width: 600px; padding: 2rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-        .progress-bar { height: 10px; background: #e2e8f0; border-radius: 10px; margin-bottom: 1.5rem; overflow: hidden; }
-        #progress { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
-        .case-box { background: #f1f5f9; border-left: 5px solid var(--primary); padding: 18px; border-radius: 8px; margin-bottom: 1.5rem; }
-        .case-title { font-weight: bold; color: var(--primary); display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
-        .audio-section { text-align: center; margin-bottom: 1.5rem; background: #eef2ff; padding: 15px; border-radius: 12px; }
-        .audio-btn { width: 65px; height: 65px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .audio-btn:hover { transform: scale(1.1); background: #4338ca; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .option { padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
-        .option:hover:not(:disabled) { border-color: var(--primary); background: #f8fafc; }
-        .correct { background: #dcfce7 !important; border-color: var(--success) !important; color: #166534 !important; }
-        .wrong { background: #fee2e2 !important; border-color: var(--error) !important; color: #991b1b !important; }
+        :root { --primary: #6366f1; --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --success: #10b981; --error: #f43f5e; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background: var(--card); width: 100%; max-width: 550px; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .progress-bar { height: 6px; background: #e2e8f0; border-radius: 10px; margin-bottom: 2rem; overflow: hidden; }
+        #progress { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
+        .case-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 1.5rem; position: relative; }
+        .case-tag { position: absolute; top: -10px; left: 20px; background: var(--primary); color: white; padding: 2px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
+        .audio-btn { width: 60px; height: 60px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; transition: 0.2s; }
+        .audio-btn:hover { transform: scale(1.1); filter: brightness(1.1); }
+        .options-grid { display: grid; gap: 10px; }
+        .option { padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; font-weight: 500; transition: 0.2s; text-align: left; }
+        .option:hover:not(:disabled) { border-color: var(--primary); background: #fdf2f8; }
+        .correct { background: #ecfdf5 !important; border-color: var(--success) !important; color: #065f46 !important; }
+        .wrong { background: #fff1f2 !important; border-color: var(--error) !important; color: #9f1239 !important; }
         .hidden { display: none; }
-        .btn-next { margin-top: 1.5rem; width: 100%; padding: 16px; background: #1e293b; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem; }
-        .feedback { margin-top: 15px; font-weight: bold; text-align: center; min-height: 1.5rem; font-size: 0.9rem; }
-        @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
+        .btn-next { margin-top: 1.5rem; width: 100%; padding: 15px; background: #0f172a; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .feedback { text-align: center; margin-top: 15px; font-weight: bold; min-height: 1.2rem; }
     </style>
 </head>
 <body>
@@ -32,111 +30,109 @@
     <div class="progress-bar"><div id="progress"></div></div>
     
     <div id="game-screen">
-        <p id="question-count" style="text-align: center; font-weight: bold; color: #64748b; margin-bottom: 5px;"></p>
-        <div id="case-description" class="case-box">
-            <span class="case-title">Relatório de Exame Físico:</span>
-            <div id="case-text" style="line-height: 1.6;"></div>
+        <p id="counter" style="text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 1rem;"></p>
+        
+        <div class="case-card">
+            <span class="case-tag">CASO CLÍNICO</span>
+            <p id="case-text" style="margin: 0; line-height: 1.5; font-size: 0.95rem;"></p>
         </div>
 
-        <div class="audio-section">
-            <p style="font-size: 0.8rem; margin-bottom: 10px; color: #4f46e5; font-weight: bold;">AUSCULTA DO QUADRO:</p>
-            <button class="audio-btn" onclick="playAudio()">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-            </button>
-        </div>
+        <button class="audio-btn" onclick="playAudio()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+        </button>
 
-        <audio id="audio-player"></audio>
+        <audio id="player"></audio>
         <div class="options-grid" id="options"></div>
         <div id="feedback" class="feedback"></div>
-        <button id="next-btn" class="btn-next hidden" onclick="nextQuestion()">Verificar Próximo Paciente ➡️</button>
+        <button id="next-btn" class="btn-next hidden" onclick="nextQuestion()">Próximo Paciente ➡️</button>
     </div>
 
     <div id="result-screen" class="hidden" style="text-align: center;">
-        <h2 style="font-size: 2rem;">Simulado Concluído</h2>
-        <p id="score-text" style="font-size: 1.3rem; margin-bottom: 2rem; color: #475569;"></p>
-        <button class="btn-next" onclick="location.reload()">Refazer Simulado Completo</button>
+        <h2>Avaliação Finalizada</h2>
+        <p id="score-text" style="font-size: 1.2rem;"></p>
+        <button class="btn-next" onclick="location.reload()">Reiniciar Simulado</button>
     </div>
 </div>
 
 <script>
-    const database = [
+    const soundData = [
         {
-            disease: 'Condensação (Pneumonia)',
-            audio: 'estertor fino.m4a',
-            observations: [
-                'Expansibilidade reduzida. FTV aumentado. Macicez à percussão.',
-                'Substituição do ar alveolar por exsudato. Broncofonia presente.',
-                'Hepatização do parênquima. Percussão densa e FTV muito forte.'
+            name: 'Estertor Fino',
+            file: 'estertor fino.m4a',
+            contexts: [
+                'Paciente com febre e tosse produtiva. Ao exame: expansibilidade reduzida, FTV aumentado e macicez à percussão.',
+                'Quadro de pneumonia lobar em fase de hepatização. O som é agudo e ouvido ao final da inspiração.',
+                'Paciente apresenta condensação pulmonar. Na percussão nota-se macicez por substituição do ar por exsudato.'
             ]
         },
         {
-            disease: 'Crise de Asma / DPOC',
-            audio: 'SIBILO.m4a',
-            observations: [
-                'Tórax em tonel. Hipersonoridade à percussão. FTV diminuído.',
-                'Uso de musculatura acessória. Expiração prolongada detectada.',
-                'Aprisionamento de ar. Murmúrio vesicular reduzido globalmente.'
+            name: 'Sibilo',
+            file: 'SIBILO.m4a',
+            contexts: [
+                'Paciente asmático com dispneia. Apresenta tórax em tonel, uso de musculatura acessória e expiração prolongada.',
+                'Crise de DPOC com aprisionamento de ar. Percussão revela hipersonoridade e FTV reduzido simetricamente.',
+                'Paciente com obstrução de vias aéreas inferiores. Nota-se redução do fluxo efetivo de ar e tempo expiratório aumentado.'
             ]
         },
         {
-            disease: 'Derrame Pleural',
-            audio: 'atrito pleural.m4a',
-            observations: [
-                'Líquido no espaço pleural. Macicez firme. FTV abolido na base.',
-                'Sinal do menisco presente. Expansibilidade reduzida na base afetada.',
-                'Dor pleurítica ao inspirar. Atrito inicial evoluindo para silêncio.'
+            name: 'Atrito Pleural',
+            file: 'atrito pleural.m4a',
+            contexts: [
+                'Paciente com dor torácica ventilatório-dependente. Há acúmulo de líquido no espaço pleural e FTV reduzido.',
+                'Quadro inicial de pleurite. À inspeção, nota-se postura antálgica e expansibilidade diminuída no lado afetado.',
+                'Derrame pleural em fase inflamatória. Há macicez à percussão e sinal do menisco em exames de imagem.'
             ]
         },
         {
-            disease: 'Obstrução de Vias Superiores',
-            audio: 'ESTRIDOR.m4a',
-            observations: [
-                'Ruído audível sem estetoscópio. Tiragem infraesternal presente.',
-                'Dificuldade inspiratória severa. Edema de glote suspeito.',
-                'Corpo estranho em vias aéreas altas. Angústia respiratória.'
+            name: 'Estridor',
+            file: 'ESTRIDOR.m4a',
+            contexts: [
+                'Criança com obstrução de vias aéreas superiores por corpo estranho. Som intenso ouvido predominantemente na inspiração.',
+                'Paciente com edema de glote pós-reação alérgica. Apresenta tiragem infraesternal e ruído de alta frequência audível sem estetoscópio.',
+                'Quadro de laringite aguda. O fluxo de ar está severamente limitado na região da laringe/traqueia.'
             ]
         },
         {
-            disease: 'Edema Pulmonar / Congestão',
-            audio: 'estertor grosso.m4a',
-            observations: [
-                'Presença de secreção em grandes brônquios. Tosse produtiva.',
-                'Bolhas que explodem no início da inspiração. Ruído bolhoso.',
-                'Paciente com insuficiência cardíaca. Estertores em bases.'
+            name: 'Murmúrio Vesicular',
+            file: 'Murmurio_vesicular.m4a',
+            contexts: [
+                'Exame de rotina em paciente saudável. Som suave ouvido em quase toda a periferia pulmonar, sem ruídos adventícios.',
+                'Paciente em pós-operatório com ventilação preservada. Inspiração mais longa e audível que a expiração.',
+                'Avaliação pulmonar normal. O som representa a entrada de ar nos alvéolos sem obstruções ou secreções.'
             ]
         },
         {
-            disease: 'Pneumotórax',
-            audio: 'Murmurio_vesicular.m4a',
-            observations: [
-                'Timpanismo à percussão. FTV totalmente ausente. Assimetria.',
-                'Ar no espaço pleural. Súbita dor torácica e MV abolido.',
-                'Desvio da traqueia para o lado oposto ao colapso.'
+            name: 'Estertor Grosso',
+            file: 'estertor grosso.m4a',
+            contexts: [
+                'Paciente com bronquiectasia e grande acúmulo de secreção em vias aéreas de grande calibre. Som bolhoso.',
+                'Idoso com insuficiência cardíaca congestiva e edema pulmonar. Som altera-se com a tosse.',
+                'Quadro de bronquite crônica com hipersecreção de muco. Som ouvido em ambas as fases respiratórias.'
             ]
         },
         {
-            disease: 'Consolidação Brônquica',
-            audio: 'SOM BRÔNQUICO.m4a',
-            observations: [
-                'Sons tubulares ouvidos em áreas periféricas. Consolidação extensa.',
-                'Som alto e agudo onde deveria haver murmúrio vesicular.',
-                'Fase expiratória tão longa quanto a inspiratória.'
+            name: 'Som Brônquico',
+            file: 'SOM BRÔNQUICO.m4a',
+            contexts: [
+                'Ausculta sobre a traqueia em paciente normal, ou em periferia no caso de consolidação pulmonar severa.',
+                'Som tubular com fase expiratória forte e prolongada. Representa a condução do ar através de brônquios calibrosos.',
+                'Paciente com grande área de condensação. O som brônquico é transmitido para a parede torácica devido à densidade do tecido.'
             ]
         },
         {
-            disease: 'Normalidade / Padrão Fisiológico',
-            audio: 'SOM BRONCOVESICULAR.m4a',
-            observations: [
-                'Ausculta em região hilar e espaços interescápulo-vertebrais.',
-                'Som de intensidade moderada. Transição entre sons traqueais e MV.',
-                'Achado normal em regiões centrais do tórax adulto.'
+            name: 'Som Broncovesicular',
+            file: 'SOM BRONCOVESICULAR.m4a',
+            contexts: [
+                'Som de intensidade moderada ouvido na região esternal superior e interescapular.',
+                'Representa a superposição dos sons traqueais com o murmúrio alveolar. Encontrado em áreas de bifurcação brônquica.',
+                'Ausculta normal em regiões hilares. As fases inspiratória e expiratória têm durações semelhantes.'
             ]
         }
     ];
 
+    let quizList = [];
     let currentIdx = 0;
     let score = 0;
-    let quizList = [];
 
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -146,11 +142,11 @@
         return array;
     }
 
-    function initQuiz() {
-        // Cria a lista com cada caso aparecendo 3 vezes
+    function init() {
+        // Multiplica por 3 repetições
         let pool = [];
-        database.forEach(item => {
-            pool.push({...item}, {...item}, {...item});
+        soundData.forEach(s => {
+            pool.push({...s, contextIdx: 0}, {...s, contextIdx: 1}, {...s, contextIdx: 2});
         });
         quizList = shuffle(pool);
         showQuestion();
@@ -158,73 +154,62 @@
 
     function showQuestion() {
         const q = quizList[currentIdx];
-        const randomObs = q.observations[Math.floor(Math.random() * q.observations.length)];
-        
-        document.getElementById('case-text').innerHTML = `<p>${randomObs}</p><strong>Qual o diagnóstico ou som predominante?</strong>`;
-        const audioPlayer = document.getElementById('audio-player');
-        audioPlayer.src = q.audio;
-        audioPlayer.load();
-
+        document.getElementById('case-text').innerText = q.contexts[q.contextIdx];
+        document.getElementById('player').src = q.file;
         document.getElementById('feedback').innerText = '';
-        document.getElementById('question-count').innerText = `Paciente ${currentIdx + 1} de ${quizList.length}`;
-        document.getElementById('progress').style.width = `${((currentIdx + 1) / quizList.length) * 100}%`;
+        document.getElementById('next-btn').classList.add('hidden');
         
+        const total = quizList.length;
+        document.getElementById('counter').innerText = `PACIENTE ${currentIdx + 1} / ${total}`;
+        document.getElementById('progress').style.width = `${((currentIdx + 1) / total) * 100}%`;
+
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
 
-        // Gera alternativas: a correta + 3 erradas aleatórias
-        let choices = [q.disease];
-        let others = database.filter(d => d.disease !== q.disease).map(d => d.disease);
-        shuffle(others);
-        choices.push(...others.slice(0, 3));
-        shuffle(choices);
+        let choices = shuffle([q.name, ...shuffle(soundData.filter(s => s.name !== q.name).map(s => s.name)).slice(0, 3)]);
 
-        choices.forEach(choice => {
+        choices.forEach(c => {
             const btn = document.createElement('button');
             btn.className = 'option';
-            btn.innerText = choice;
-            btn.onclick = () => checkAnswer(choice, q.disease, btn);
+            btn.innerText = c;
+            btn.onclick = () => check(c, q.name, btn);
             optionsDiv.appendChild(btn);
         });
-        
-        document.getElementById('next-btn').classList.add('hidden');
     }
 
     function playAudio() {
-        const audio = document.getElementById('audio-player');
-        audio.currentTime = 0;
-        audio.play().catch(e => console.log("Aguardando interação do usuário."));
+        const a = document.getElementById('player');
+        a.currentTime = 0;
+        a.play();
     }
 
-    function checkAnswer(selected, correct, btn) {
-        const allBtns = document.querySelectorAll('.option');
-        allBtns.forEach(b => b.disabled = true);
-        const feedback = document.getElementById('feedback');
+    function check(selected, correct, btn) {
+        const btns = document.querySelectorAll('.option');
+        btns.forEach(b => b.disabled = true);
         
-        if (selected === correct) { 
-            btn.classList.add('correct'); 
-            feedback.innerHTML = '<span style="color:var(--success)">✅ Diagnóstico Preciso!</span>';
-            score++; 
-        } else { 
-            btn.classList.add('wrong'); 
-            feedback.innerHTML = `<span style="color:var(--error)">❌ Incorreto. O quadro sugere ${correct}.</span>`;
-            allBtns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); }); 
+        if(selected === correct) {
+            btn.classList.add('correct');
+            document.getElementById('feedback').innerHTML = "✅ Correto!";
+            score++;
+        } else {
+            btn.classList.add('wrong');
+            document.getElementById('feedback').innerHTML = `❌ Incorreto. O som é ${correct}.`;
+            btns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
         }
         document.getElementById('next-btn').classList.remove('hidden');
     }
 
     function nextQuestion() {
         currentIdx++;
-        if (currentIdx < quizList.length) {
-            showQuestion();
-        } else {
+        if(currentIdx < quizList.length) showQuestion();
+        else {
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `Pontuação Final: ${score} de ${quizList.length} diagnósticos corretos.`;
+            document.getElementById('score-text').innerText = `Você identificou corretamente ${score} de ${quizList.length} sons!`;
         }
     }
 
-    window.onload = initQuiz;
+    window.onload = init;
 </script>
 </body>
 </html>
