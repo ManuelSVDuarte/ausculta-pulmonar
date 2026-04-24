@@ -3,213 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulado: Identificação de Sons Pulmonares</title>
+    <title>Simulado de Ausculta Pulmonar</title>
     <style>
-        :root { --primary: #6366f1; --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --success: #10b981; --error: #f43f5e; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background: var(--card); width: 100%; max-width: 550px; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .progress-bar { height: 6px; background: #e2e8f0; border-radius: 10px; margin-bottom: 2rem; overflow: hidden; }
+        :root { --primary: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --success: #22c55e; --error: #ef4444; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { background: var(--card); width: 100%; max-width: 600px; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        /* Telas */
+        .screen { display: none; }
+        .active { display: block; }
+
+        /* Estilos Comuns */
+        h1, h2 { text-align: center; color: var(--primary); }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; margin-top: 10px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #4338ca; }
+        
+        /* Tela Inicial */
+        .sound-list { background: #f1f5f9; padding: 15px; border-radius: 10px; margin: 20px 0; }
+        .sound-item { font-size: 0.9rem; padding: 5px 0; border-bottom: 1px solid #e2e8f0; }
+
+        /* Tela de Jogo */
+        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         #progress { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
-        .case-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 1.5rem; position: relative; }
-        .case-tag { position: absolute; top: -10px; left: 20px; background: var(--primary); color: white; padding: 2px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
-        .audio-btn { width: 60px; height: 60px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; transition: 0.2s; }
-        .audio-btn:hover { transform: scale(1.1); filter: brightness(1.1); }
-        .options-grid { display: grid; gap: 10px; }
-        .option { padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; font-weight: 500; transition: 0.2s; text-align: left; }
-        .option:hover:not(:disabled) { border-color: var(--primary); background: #fdf2f8; }
-        .correct { background: #ecfdf5 !important; border-color: var(--success) !important; color: #065f46 !important; }
-        .wrong { background: #fff1f2 !important; border-color: var(--error) !important; color: #9f1239 !important; }
-        .hidden { display: none; }
-        .btn-next { margin-top: 1.5rem; width: 100%; padding: 15px; background: #0f172a; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .feedback { text-align: center; margin-top: 15px; font-weight: bold; min-height: 1.2rem; }
+        .case-box { background: #f8fafc; border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 20px; font-style: italic; }
+        .audio-btn { width: 60px; height: 60px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; display: block; margin: 0 auto 20px; }
+        input[type="text"] { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; font-size: 1rem; margin-bottom: 10px; }
+        .feedback-area { text-align: center; font-weight: bold; margin: 10px 0; min-height: 20px; }
+
+        /* Tela Final */
+        .result-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-radius: 8px; margin-bottom: 8px; background: #f8fafc; }
+        .result-info { flex-grow: 1; margin-right: 10px; }
+        .status-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+        .tag-success { background: #dcfce7; color: #166534; }
+        .tag-error { background: #fee2e2; color: #991b1b; }
+        .mini-audio-btn { background: #e2e8f0; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="progress-bar"><div id="progress"></div></div>
-    
-    <div id="game-screen">
-        <p id="counter" style="text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 1rem;"></p>
-        
-        <div class="case-card">
-            <span class="case-tag">CASO CLÍNICO</span>
-            <p id="case-text" style="margin: 0; line-height: 1.5; font-size: 0.95rem;"></p>
-        </div>
-
-        <button class="audio-btn" onclick="playAudio()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-
-        <audio id="player"></audio>
-        <div class="options-grid" id="options"></div>
-        <div id="feedback" class="feedback"></div>
-        <button id="next-btn" class="btn-next hidden" onclick="nextQuestion()">Próximo Paciente ➡️</button>
+    <div id="start-screen" class="screen active">
+        <h1>Simulado de Ausculta</h1>
+        <p>Estude a lista de sons possíveis antes de começar:</p>
+        <div class="sound-list" id="initial-list"></div>
+        <p style="font-size: 0.8rem; color: #64748b;">* No simulado, você deverá digitar o nome exatamente como aparece acima.</p>
+        <button class="btn btn-primary" onclick="startQuiz()">Começar Simulado</button>
     </div>
 
-    <div id="result-screen" class="hidden" style="text-align: center;">
-        <h2>Avaliação Finalizada</h2>
-        <p id="score-text" style="font-size: 1.2rem;"></p>
-        <button class="btn-next" onclick="location.reload()">Reiniciar Simulado</button>
+    <div id="game-screen" class="screen">
+        <div class="progress-bar"><div id="progress"></div></div>
+        <p id="q-counter" style="text-align:center; font-size: 0.8rem;"></p>
+        
+        <div class="case-box" id="case-text"></div>
+        
+        <button class="audio-btn" onclick="playAudio('main-audio')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <audio id="main-audio"></audio>
+
+        <input type="text" id="user-answer" placeholder="Digite o nome do som..." autocomplete="off">
+        <div id="feedback" class="feedback-area"></div>
+        
+        <button id="check-btn" class="btn btn-primary" onclick="checkAnswer()">Conferir Resposta</button>
+        <button id="next-btn" class="btn btn-primary hidden" style="background:#1e293b" onclick="nextQuestion()">Próximo Caso ➡️</button>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <h2>Resultado Final</h2>
+        <p id="final-score" style="text-align:center; font-weight:bold;"></p>
+        <div id="results-review"></div>
+        <button class="btn btn-primary" onclick="location.reload()">Refazer Tudo</button>
     </div>
 </div>
 
 <script>
-    const soundData = [
-        {
-            name: 'Estertor Fino',
-            file: 'estertor fino.m4a',
-            contexts: [
-                'Paciente com febre e tosse produtiva. Ao exame: expansibilidade reduzida, FTV aumentado e macicez à percussão.',
-                'Quadro de pneumonia lobar em fase de hepatização. O som é agudo e ouvido ao final da inspiração.',
-                'Paciente apresenta condensação pulmonar. Na percussão nota-se macicez por substituição do ar por exsudato.'
-            ]
-        },
-        {
-            name: 'Sibilo',
-            file: 'SIBILO.m4a',
-            contexts: [
-                'Paciente asmático com dispneia. Apresenta tórax em tonel, uso de musculatura acessória e expiração prolongada.',
-                'Crise de DPOC com aprisionamento de ar. Percussão revela hipersonoridade e FTV reduzido simetricamente.',
-                'Paciente com obstrução de vias aéreas inferiores. Nota-se redução do fluxo efetivo de ar e tempo expiratório aumentado.'
-            ]
-        },
-        {
-            name: 'Atrito Pleural',
-            file: 'atrito pleural.m4a',
-            contexts: [
-                'Paciente com dor torácica ventilatório-dependente. Há acúmulo de líquido no espaço pleural e FTV reduzido.',
-                'Quadro inicial de pleurite. À inspeção, nota-se postura antálgica e expansibilidade diminuída no lado afetado.',
-                'Derrame pleural em fase inflamatória. Há macicez à percussão e sinal do menisco em exames de imagem.'
-            ]
-        },
-        {
-            name: 'Estridor',
-            file: 'ESTRIDOR.m4a',
-            contexts: [
-                'Criança com obstrução de vias aéreas superiores por corpo estranho. Som intenso ouvido predominantemente na inspiração.',
-                'Paciente com edema de glote pós-reação alérgica. Apresenta tiragem infraesternal e ruído de alta frequência audível sem estetoscópio.',
-                'Quadro de laringite aguda. O fluxo de ar está severamente limitado na região da laringe/traqueia.'
-            ]
-        },
-        {
-            name: 'Murmúrio Vesicular',
-            file: 'Murmurio_vesicular.m4a',
-            contexts: [
-                'Exame de rotina em paciente saudável. Som suave ouvido em quase toda a periferia pulmonar, sem ruídos adventícios.',
-                'Paciente em pós-operatório com ventilação preservada. Inspiração mais longa e audível que a expiração.',
-                'Avaliação pulmonar normal. O som representa a entrada de ar nos alvéolos sem obstruções ou secreções.'
-            ]
-        },
-        {
-            name: 'Estertor Grosso',
-            file: 'estertor grosso.m4a',
-            contexts: [
-                'Paciente com bronquiectasia e grande acúmulo de secreção em vias aéreas de grande calibre. Som bolhoso.',
-                'Idoso com insuficiência cardíaca congestiva e edema pulmonar. Som altera-se com a tosse.',
-                'Quadro de bronquite crônica com hipersecreção de muco. Som ouvido em ambas as fases respiratórias.'
-            ]
-        },
-        {
-            name: 'Som Brônquico',
-            file: 'SOM BRÔNQUICO.m4a',
-            contexts: [
-                'Ausculta sobre a traqueia em paciente normal, ou em periferia no caso de consolidação pulmonar severa.',
-                'Som tubular com fase expiratória forte e prolongada. Representa a condução do ar através de brônquios calibrosos.',
-                'Paciente com grande área de condensação. O som brônquico é transmitido para a parede torácica devido à densidade do tecido.'
-            ]
-        },
-        {
-            name: 'Som Broncovesicular',
-            file: 'SOM BRONCOVESICULAR.m4a',
-            contexts: [
-                'Som de intensidade moderada ouvido na região esternal superior e interescapular.',
-                'Representa a superposição dos sons traqueais com o murmúrio alveolar. Encontrado em áreas de bifurcação brônquica.',
-                'Ausculta normal em regiões hilares. As fases inspiratória e expiratória têm durações semelhantes.'
-            ]
-        }
+    const database = [
+        { name: 'Estertor Fino', file: 'estertor fino.m4a', contexts: ['Pneumonia lobar, FTV aumentado e macicez.', 'Som agudo ouvido ao final da inspiração.', 'Hepatização pulmonar por exsudato.'] },
+        { name: 'Sibilo', file: 'SIBILO.m4a', contexts: ['Asma, tórax em tonel e expiração prolongada.', 'DPOC com hipersonoridade e FTV reduzido.', 'Obstrução de vias aéreas inferiores.'] },
+        { name: 'Atrito Pleural', file: 'atrito pleural.m4a', contexts: ['Dor pleurítica e expansibilidade reduzida.', 'Inflamação das pleuras com ruído de fricção.', 'Derrame pleural em fase inicial.'] },
+        { name: 'Estridor', file: 'ESTRIDOR.m4a', contexts: ['Obstrução de laringe por corpo estranho.', 'Edema de glote com tiragem infraesternal.', 'Som inspiratório intenso audível à distância.'] },
+        { name: 'Murmúrio Vesicular', file: 'Murmurio_vesicular.m4a', contexts: ['Ausculta pulmonar fisiológica normal.', 'Som suave em toda periferia pulmonar.', 'Entrada de ar livre nos alvéolos.'] },
+        { name: 'Estertor Grosso', file: 'estertor grosso.m4a', contexts: ['Bronquiectasia com grande acúmulo de muco.', 'Insuficiência cardíaca com edema pulmonar.', 'Sons bolhosos que mudam com a tosse.'] },
+        { name: 'Som Brônquico', file: 'SOM BRÔNQUICO.m4a', contexts: ['Som tubular ouvido sobre a traqueia.', 'Consolidação severa transmitindo som central.', 'Expiração forte e longa em área periférica.'] },
+        { name: 'Som Broncovesicular', file: 'SOM BRONCOVESICULAR.m4a', contexts: ['Ausculta em região hilar e esternal superior.', 'Transição entre sons traqueais e alveolares.', 'Normal em regiões centrais do tórax.'] }
     ];
 
     let quizList = [];
     let currentIdx = 0;
     let score = 0;
+    let history = [];
+
+    // Inicializa lista da tela inicial
+    const initialListDiv = document.getElementById('initial-list');
+    database.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'sound-item';
+        div.innerText = `• ${s.name}`;
+        initialListDiv.appendChild(div);
+    });
 
     function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
+        return array.sort(() => Math.random() - 0.5);
     }
 
-    function init() {
-        // Multiplica por 3 repetições
+    // Normalizar texto para comparação (tira acentos e espaços extras)
+    function normalize(str) {
+        return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    }
+
+    function startQuiz() {
+        // 3 repetições de cada som (24 questões)
         let pool = [];
-        soundData.forEach(s => {
-            pool.push({...s, contextIdx: 0}, {...s, contextIdx: 1}, {...s, contextIdx: 2});
+        database.forEach(s => {
+            pool.push({...s, ctx: s.contexts[0]}, {...s, ctx: s.contexts[1]}, {...s, ctx: s.contexts[2]});
         });
         quizList = shuffle(pool);
+        
+        document.getElementById('start-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.add('active');
         showQuestion();
     }
 
     function showQuestion() {
         const q = quizList[currentIdx];
-        document.getElementById('case-text').innerText = q.contexts[q.contextIdx];
-        document.getElementById('player').src = q.file;
+        document.getElementById('case-text').innerText = q.ctx;
+        document.getElementById('main-audio').src = q.file;
+        document.getElementById('user-answer').value = '';
+        document.getElementById('user-answer').disabled = false;
         document.getElementById('feedback').innerText = '';
+        document.getElementById('check-btn').classList.remove('hidden');
         document.getElementById('next-btn').classList.add('hidden');
         
-        const total = quizList.length;
-        document.getElementById('counter').innerText = `PACIENTE ${currentIdx + 1} / ${total}`;
-        document.getElementById('progress').style.width = `${((currentIdx + 1) / total) * 100}%`;
-
-        const optionsDiv = document.getElementById('options');
-        optionsDiv.innerHTML = '';
-
-        let choices = shuffle([q.name, ...shuffle(soundData.filter(s => s.name !== q.name).map(s => s.name)).slice(0, 3)]);
-
-        choices.forEach(c => {
-            const btn = document.createElement('button');
-            btn.className = 'option';
-            btn.innerText = c;
-            btn.onclick = () => check(c, q.name, btn);
-            optionsDiv.appendChild(btn);
-        });
+        document.getElementById('q-counter').innerText = `QUESTÃO ${currentIdx + 1} DE ${quizList.length}`;
+        document.getElementById('progress').style.width = `${((currentIdx + 1) / quizList.length) * 100}%`;
     }
 
-    function playAudio() {
-        const a = document.getElementById('player');
+    function playAudio(id) {
+        const a = document.getElementById(id);
         a.currentTime = 0;
         a.play();
     }
 
-    function check(selected, correct, btn) {
-        const btns = document.querySelectorAll('.option');
-        btns.forEach(b => b.disabled = true);
+    function checkAnswer() {
+        const q = quizList[currentIdx];
+        const userAns = document.getElementById('user-answer').value;
+        const isCorrect = normalize(userAns) === normalize(q.name);
         
-        if(selected === correct) {
-            btn.classList.add('correct');
-            document.getElementById('feedback').innerHTML = "✅ Correto!";
+        document.getElementById('user-answer').disabled = true;
+        document.getElementById('check-btn').classList.add('hidden');
+        document.getElementById('next-btn').classList.remove('hidden');
+
+        const feedback = document.getElementById('feedback');
+        if(isCorrect) {
+            feedback.innerHTML = `<span style="color:var(--success)">✅ Correto!</span>`;
             score++;
         } else {
-            btn.classList.add('wrong');
-            document.getElementById('feedback').innerHTML = `❌ Incorreto. O som é ${correct}.`;
-            btns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
+            feedback.innerHTML = `<span style="color:var(--error)">❌ Incorreto. O som é: ${q.name}</span>`;
         }
-        document.getElementById('next-btn').classList.remove('hidden');
+
+        history.push({ ...q, userAns, isCorrect });
     }
 
     function nextQuestion() {
         currentIdx++;
         if(currentIdx < quizList.length) showQuestion();
-        else {
-            document.getElementById('game-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `Você identificou corretamente ${score} de ${quizList.length} sons!`;
-        }
+        else showFinalResults();
     }
 
-    window.onload = init;
+    function showFinalResults() {
+        document.getElementById('game-screen').classList.remove('active');
+        document.getElementById('result-screen').classList.add('active');
+        
+        document.getElementById('final-score').innerText = `Você acertou ${score} de ${quizList.length}`;
+        
+        const reviewDiv = document.getElementById('results-review');
+        reviewDiv.innerHTML = '<h3>Revisão dos Casos:</h3>';
+
+        history.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'result-item';
+            div.innerHTML = `
+                <div class="result-info">
+                    <span class="status-tag ${item.isCorrect ? 'tag-success' : 'tag-error'}">
+                        ${item.isCorrect ? 'Acerto' : 'Erro'}
+                    </span>
+                    <div style="font-size:0.85rem; margin-top:5px;"><strong>Som:</strong> ${item.name}</div>
+                    <div style="font-size:0.75rem; color:#64748b">Sua resposta: ${item.userAns || '(vazio)'}</div>
+                </div>
+                <button class="mini-audio-btn" onclick="playAudio('audio-rev-${index}')">▶️ Ouvir</button>
+                <audio id="audio-rev-${index}" src="${item.file}"></audio>
+            `;
+            reviewDiv.appendChild(div);
+        });
+    }
 </script>
 </body>
 </html>
