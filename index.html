@@ -3,31 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulado de Diagnóstico Pulmonar</title>
+    <title>Simulado de Diagnóstico Pulmonar Avançado</title>
     <style>
-        :root { --primary: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --success: #22c55e; --error: #ef4444; --accent: #6366f1; }
+        :root { --primary: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --success: #22c55e; --error: #ef4444; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background: var(--card); width: 100%; max-width: 550px; padding: 2rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 10px; margin-bottom: 1.5rem; overflow: hidden; }
+        .container { background: var(--card); width: 100%; max-width: 600px; padding: 2rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .progress-bar { height: 10px; background: #e2e8f0; border-radius: 10px; margin-bottom: 1.5rem; overflow: hidden; }
         #progress { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
-        
-        .case-box { background: #f1f5f9; border-left: 4px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 1.5rem; text-align: left; font-size: 0.95rem; line-height: 1.5; }
-        .case-title { font-weight: bold; color: var(--primary); display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8rem; }
-        
-        .audio-section { text-align: center; margin-bottom: 1.5rem; }
-        .audio-btn { width: 80px; height: 80px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
-        .audio-btn:hover { transform: scale(1.05); background: var(--accent); }
-        
-        .options-grid { display: grid; gap: 10px; }
-        .option { padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; cursor: pointer; font-weight: 600; text-align: left; transition: 0.2s; font-size: 0.9rem; }
+        .case-box { background: #f1f5f9; border-left: 5px solid var(--primary); padding: 18px; border-radius: 8px; margin-bottom: 1.5rem; }
+        .case-title { font-weight: bold; color: var(--primary); display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .audio-section { text-align: center; margin-bottom: 1.5rem; background: #eef2ff; padding: 15px; border-radius: 12px; }
+        .audio-btn { width: 65px; height: 65px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .audio-btn:hover { transform: scale(1.1); background: #4338ca; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .option { padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
         .option:hover:not(:disabled) { border-color: var(--primary); background: #f8fafc; }
         .correct { background: #dcfce7 !important; border-color: var(--success) !important; color: #166534 !important; }
         .wrong { background: #fee2e2 !important; border-color: var(--error) !important; color: #991b1b !important; }
-        
         .hidden { display: none; }
-        .btn-next { margin-top: 1.5rem; width: 100%; padding: 14px; background: #1e293b; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
-        h2 { margin: 0 0 1rem 0; font-size: 1.4rem; text-align: center; }
-        .feedback { margin-top: 10px; font-weight: bold; font-size: 0.9rem; min-height: 1.2rem; text-align: center; }
+        .btn-next { margin-top: 1.5rem; width: 100%; padding: 16px; background: #1e293b; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        .feedback { margin-top: 15px; font-weight: bold; text-align: center; min-height: 1.5rem; font-size: 0.9rem; }
+        @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -36,68 +32,105 @@
     <div class="progress-bar"><div id="progress"></div></div>
     
     <div id="game-screen">
-        <p id="question-count" style="text-align: center; font-weight: bold; color: #64748b;"></p>
-        <h2>Caso Clínico</h2>
-        
+        <p id="question-count" style="text-align: center; font-weight: bold; color: #64748b; margin-bottom: 5px;"></p>
         <div id="case-description" class="case-box">
-            <span class="case-title">Exame Físico:</span>
-            <span id="case-text"></span>
+            <span class="case-title">Relatório de Exame Físico:</span>
+            <div id="case-text" style="line-height: 1.6;"></div>
         </div>
 
         <div class="audio-section">
-            <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 8px;">Ouça a ausculta deste paciente:</p>
+            <p style="font-size: 0.8rem; margin-bottom: 10px; color: #4f46e5; font-weight: bold;">AUSCULTA DO QUADRO:</p>
             <button class="audio-btn" onclick="playAudio()">
-                <svg width="35" height="35" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
             </button>
         </div>
 
         <audio id="audio-player"></audio>
-        
         <div class="options-grid" id="options"></div>
         <div id="feedback" class="feedback"></div>
-        
-        <button id="next-btn" class="btn-next hidden" onclick="nextQuestion()">Próximo Caso ➡️</button>
+        <button id="next-btn" class="btn-next hidden" onclick="nextQuestion()">Verificar Próximo Paciente ➡️</button>
     </div>
 
     <div id="result-screen" class="hidden" style="text-align: center;">
-        <h2>Simulado Concluído!</h2>
-        <p id="score-text" style="font-size: 1.2rem; margin-bottom: 1.5rem;"></p>
-        <button class="btn-next" onclick="location.reload()">Reiniciar Simulado</button>
+        <h2 style="font-size: 2rem;">Simulado Concluído</h2>
+        <p id="score-text" style="font-size: 1.3rem; margin-bottom: 2rem; color: #475569;"></p>
+        <button class="btn-next" onclick="location.reload()">Refazer Simulado Completo</button>
     </div>
 </div>
 
 <script>
-    // Casos baseados no PDF fornecido
-    const cases = [
+    const database = [
         {
             disease: 'Condensação (Pneumonia)',
-            description: 'Expansibilidade reduzida na área afetada. FTV aumentado. Percussão com macicez devido à substituição do ar por exsudato.',
-            audioFile: 'estertor fino.m4a', // Comum em pneumonias
-            tip: 'Achado típico: Broncofonia/Egofonia'
+            audio: 'estertor fino.m4a',
+            observations: [
+                'Expansibilidade reduzida. FTV aumentado. Macicez à percussão.',
+                'Substituição do ar alveolar por exsudato. Broncofonia presente.',
+                'Hepatização do parênquima. Percussão densa e FTV muito forte.'
+            ]
         },
         {
-            disease: 'DPOC (Hiperinsuflação)',
-            description: 'Tórax em tonel, expiração prolongada e uso de musculatura acessória. FTV diminuído e hipersonoridade na percussão.',
-            audioFile: 'SIBILO.m4a', 
-            tip: 'Passagem do ar por vias aéreas estreitadas.'
+            disease: 'Crise de Asma / DPOC',
+            audio: 'SIBILO.m4a',
+            observations: [
+                'Tórax em tonel. Hipersonoridade à percussão. FTV diminuído.',
+                'Uso de musculatura acessória. Expiração prolongada detectada.',
+                'Aprisionamento de ar. Murmúrio vesicular reduzido globalmente.'
+            ]
         },
         {
             disease: 'Derrame Pleural',
-            description: 'Expansibilidade diminuída no lado afetado. FTV reduzido por afastamento das pleuras. Macicez na percussão.',
-            audioFile: 'Murmurio_vesicular.m4a', // MV reduzido (usando base disponível)
-            tip: 'Sinal do Menisco e possível atrito pleural no início.'
+            audio: 'atrito pleural.m4a',
+            observations: [
+                'Líquido no espaço pleural. Macicez firme. FTV abolido na base.',
+                'Sinal do menisco presente. Expansibilidade reduzida na base afetada.',
+                'Dor pleurítica ao inspirar. Atrito inicial evoluindo para silêncio.'
+            ]
+        },
+        {
+            disease: 'Obstrução de Vias Superiores',
+            audio: 'ESTRIDOR.m4a',
+            observations: [
+                'Ruído audível sem estetoscópio. Tiragem infraesternal presente.',
+                'Dificuldade inspiratória severa. Edema de glote suspeito.',
+                'Corpo estranho em vias aéreas altas. Angústia respiratória.'
+            ]
+        },
+        {
+            disease: 'Edema Pulmonar / Congestão',
+            audio: 'estertor grosso.m4a',
+            observations: [
+                'Presença de secreção em grandes brônquios. Tosse produtiva.',
+                'Bolhas que explodem no início da inspiração. Ruído bolhoso.',
+                'Paciente com insuficiência cardíaca. Estertores em bases.'
+            ]
         },
         {
             disease: 'Pneumotórax',
-            description: 'Assimetria torácica com pulmão colapsado. FTV reduzido (ar bloqueia vibração). Percussão com timpanismo.',
-            audioFile: 'Murmurio_vesicular.m4a', // MV abolido
-            tip: 'Desvio da traqueia para o lado oposto em casos de tensão.'
+            audio: 'Murmurio_vesicular.m4a',
+            observations: [
+                'Timpanismo à percussão. FTV totalmente ausente. Assimetria.',
+                'Ar no espaço pleural. Súbita dor torácica e MV abolido.',
+                'Desvio da traqueia para o lado oposto ao colapso.'
+            ]
         },
         {
-            disease: 'Atelectasia',
-            description: 'Retração torácica com perda de volume pulmonar. FTV reduzido (ausência de ventilação). Percussão com macicez.',
-            audioFile: 'Murmurio_vesicular.m4a', // MV ausente
-            tip: 'Desvio da traqueia para o mesmo lado da lesão.'
+            disease: 'Consolidação Brônquica',
+            audio: 'SOM BRÔNQUICO.m4a',
+            observations: [
+                'Sons tubulares ouvidos em áreas periféricas. Consolidação extensa.',
+                'Som alto e agudo onde deveria haver murmúrio vesicular.',
+                'Fase expiratória tão longa quanto a inspiratória.'
+            ]
+        },
+        {
+            disease: 'Normalidade / Padrão Fisiológico',
+            audio: 'SOM BRONCOVESICULAR.m4a',
+            observations: [
+                'Ausculta em região hilar e espaços interescápulo-vertebrais.',
+                'Som de intensidade moderada. Transição entre sons traqueais e MV.',
+                'Achado normal em regiões centrais do tórax adulto.'
+            ]
         }
     ];
 
@@ -114,26 +147,34 @@
     }
 
     function initQuiz() {
-        quizList = shuffle([...cases]);
+        // Cria a lista com cada caso aparecendo 3 vezes
+        let pool = [];
+        database.forEach(item => {
+            pool.push({...item}, {...item}, {...item});
+        });
+        quizList = shuffle(pool);
         showQuestion();
     }
 
     function showQuestion() {
         const q = quizList[currentIdx];
-        document.getElementById('case-text').innerText = q.description;
-        document.getElementById('audio-player').src = q.audioFile;
-        document.getElementById('feedback').innerText = '';
+        const randomObs = q.observations[Math.floor(Math.random() * q.observations.length)];
         
-        const total = quizList.length;
-        document.getElementById('question-count').innerText = `Paciente ${currentIdx + 1} de ${total}`;
-        document.getElementById('progress').style.width = `${((currentIdx + 1) / total) * 100}%`;
+        document.getElementById('case-text').innerHTML = `<p>${randomObs}</p><strong>Qual o diagnóstico ou som predominante?</strong>`;
+        const audioPlayer = document.getElementById('audio-player');
+        audioPlayer.src = q.audio;
+        audioPlayer.load();
+
+        document.getElementById('feedback').innerText = '';
+        document.getElementById('question-count').innerText = `Paciente ${currentIdx + 1} de ${quizList.length}`;
+        document.getElementById('progress').style.width = `${((currentIdx + 1) / quizList.length) * 100}%`;
         
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
 
-        // Alternativas
+        // Gera alternativas: a correta + 3 erradas aleatórias
         let choices = [q.disease];
-        let others = cases.filter(c => c.disease !== q.disease).map(c => c.disease);
+        let others = database.filter(d => d.disease !== q.disease).map(d => d.disease);
         shuffle(others);
         choices.push(...others.slice(0, 3));
         shuffle(choices);
@@ -142,7 +183,7 @@
             const btn = document.createElement('button');
             btn.className = 'option';
             btn.innerText = choice;
-            btn.onclick = () => checkAnswer(choice, q.disease, btn, q.tip);
+            btn.onclick = () => checkAnswer(choice, q.disease, btn);
             optionsDiv.appendChild(btn);
         });
         
@@ -152,27 +193,22 @@
     function playAudio() {
         const audio = document.getElementById('audio-player');
         audio.currentTime = 0;
-        audio.play();
+        audio.play().catch(e => console.log("Aguardando interação do usuário."));
     }
 
-    function checkAnswer(selected, correct, btn, tip) {
+    function checkAnswer(selected, correct, btn) {
         const allBtns = document.querySelectorAll('.option');
         allBtns.forEach(b => b.disabled = true);
-        
-        const feedbackDiv = document.getElementById('feedback');
+        const feedback = document.getElementById('feedback');
         
         if (selected === correct) { 
             btn.classList.add('correct'); 
-            feedbackDiv.style.color = "var(--success)";
-            feedbackDiv.innerText = "Correto! " + tip;
+            feedback.innerHTML = '<span style="color:var(--success)">✅ Diagnóstico Preciso!</span>';
             score++; 
         } else { 
             btn.classList.add('wrong'); 
-            feedbackDiv.style.color = "var(--error)";
-            feedbackDiv.innerText = "Incorreto. O diagnóstico era " + correct;
-            allBtns.forEach(b => { 
-                if(b.innerText === correct) b.classList.add('correct'); 
-            }); 
+            feedback.innerHTML = `<span style="color:var(--error)">❌ Incorreto. O quadro sugere ${correct}.</span>`;
+            allBtns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); }); 
         }
         document.getElementById('next-btn').classList.remove('hidden');
     }
@@ -184,7 +220,7 @@
         } else {
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `Diagnósticos corretos: ${score} de ${quizList.length}`;
+            document.getElementById('score-text').innerText = `Pontuação Final: ${score} de ${quizList.length} diagnósticos corretos.`;
         }
     }
 
