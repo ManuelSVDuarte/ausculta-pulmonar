@@ -8,34 +8,22 @@
         :root { --primary: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --success: #22c55e; --error: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
         .container { background: var(--card); width: 100%; max-width: 650px; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        
         .screen { display: none; }
         .active { display: block; }
-
         h1, h2 { text-align: center; color: var(--primary); }
         .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; margin-top: 10px; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: #4338ca; }
-        
         .sound-list { background: #f1f5f9; padding: 15px; border-radius: 10px; margin: 20px 0; }
         .sound-item { font-size: 0.9rem; padding: 5px 0; border-bottom: 1px solid #e2e8f0; }
-
         .progress-bar { height: 8px; background: #e2e8f0; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         #progress { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
-        
         .case-box { background: #f8fafc; border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.5; text-align: justify; color: #334155; }
-        
         .audio-btn { width: 60px; height: 60px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; display: block; margin: 0 auto 20px; }
         input[type="text"] { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; font-size: 1rem; margin-bottom: 10px; }
         .feedback-area { text-align: center; font-weight: bold; margin: 10px 0; min-height: 20px; }
-        
         .hidden { display: none; }
-
         .result-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-radius: 8px; margin-bottom: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
-        .result-info { flex-grow: 1; margin-right: 10px; }
-        .status-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
-        .tag-success { background: #dcfce7; color: #166534; }
-        .tag-error { background: #fee2e2; color: #991b1b; }
         .mini-audio-btn { background: #e2e8f0; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; }
     </style>
 </head>
@@ -44,7 +32,7 @@
 <div class="container">
     <div id="start-screen" class="screen active">
         <h1>Simulado de Ausculta</h1>
-        <p>Analise o quadro clínico e identifique o som pulmonar através da audição (3 variações por som):</p>
+        <p>Analise o quadro clínico e identifique o som pulmonar através da audição:</p>
         <div class="sound-list" id="initial-list"></div>
         <button class="btn btn-primary" onclick="startQuiz()">Começar Simulado</button>
     </div>
@@ -52,24 +40,20 @@
     <div id="game-screen" class="screen">
         <div class="progress-bar"><div id="progress"></div></div>
         <p id="q-counter" style="text-align:center; font-size: 0.8rem; font-weight: bold;"></p>
-        
         <div class="case-box" id="case-text"></div>
-        
-        <button class="audio-btn" onclick="playAudio('main-audio')">
+        <button class="audio-btn" onclick="playCurrentAudio()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <audio id="main-audio"></audio>
-
+        <audio id="main-audio" preload="auto"></audio>
         <input type="text" id="user-answer" placeholder="Digite o nome do som..." autocomplete="off">
         <div id="feedback" class="feedback-area"></div>
-        
         <button id="check-btn" class="btn btn-primary" onclick="checkAnswer()">Conferir Resposta</button>
         <button id="next-btn" class="btn btn-primary hidden" style="background:#1e293b" onclick="nextQuestion()">Próximo Caso ➡️</button>
     </div>
 
     <div id="result-screen" class="screen">
         <h2>Resultado Final</h2>
-        <p id="final-score" style="text-align:center; font-weight:bold; font-size: 1.1rem;"></p>
+        <p id="final-score" style="text-align:center; font-weight:bold;"></p>
         <div id="results-review"></div>
         <button class="btn btn-primary" onclick="location.reload()">Refazer Simulado</button>
     </div>
@@ -77,78 +61,14 @@
 
 <script>
     const database = [
-        { 
-            name: 'Estertor Fino', 
-            file: 'estertor fino.m4a', 
-            contexts: [
-                'Paciente de 70 anos com insuficiência cardíaca descompensada. Apresenta ortopneia e edema de membros inferiores ++/4+. Na percussão, nota-se submacicez em bases pulmonares e a palpação demonstra expansibilidade levemente diminuída. O diagnóstico provável é congestão pulmonar passiva.',
-                'Homem de 50 anos com febre de 39°C, calafrios e tosse com expectoração herrugeante há 2 dias. No exame físico, apresenta aumento do frêmito toraco-vocal (FTV) no lobo inferior direito e macicez à percussão localizada.',
-                'Mulher de 65 anos com queixa de dispneia progressiva aos esforços há 1 ano. Apresenta baqueteamento digital e sinais de perda de volume pulmonar na inspeção dinâmica.'
-            ] 
-        },
-        { 
-            name: 'Sibilo', 
-            file: 'SIBILO.m4a', 
-            contexts: [
-                'Paciente de 12 anos chega à emergência com taquipneia, uso de musculatura acessória e tiragem intercostal. Relata histórico familiar de atopias. O tórax parece hiperinsuflado e a percussão revela hipersonoridade difusa.',
-                'Homem de 58 anos, tabagista crônico, apresenta-se com tórax em tonel, cianose de extremidades e tosse produtiva. O frêmito toraco-vocal está globalmente reduzido e o tempo expiratório parece visivelmente prolongado.',
-                'Paciente jovem com queixa de "aperto no peito" e falta de ar após contato com animais domésticos. Apresenta-se ansioso, com fala entrecortada e sudorese profusa, sem sinais de consolidação ao exame físico.'
-            ] 
-        },
-        { 
-            name: 'Atrito Pleural', 
-            file: 'atrito pleural.m4a', 
-            contexts: [
-                'Paciente de 28 anos com dor torácica aguda, pontual, que se intensifica significativamente durante a inspiração profunda e tosse. Relata melhora parcial ao deitar-se sobre o lado afetado. A expansibilidade está reduzida unilateralmente.',
-                'Homem em investigação para tromboembolismo pulmonar apresenta dor pleurítica súbita no hemitórax esquerdo. Não há sinais de secreção nas vias aéreas ou febre. O ruído percebido no local da dor desaparece se o paciente sustentar a apneia.',
-                'Paciente com lúpus eritematoso sistêmico apresenta-se com inflamação das serosas. Queixa-se de desconforto respiratório e dor aguda lateral. O exame físico não demonstra sinais de consolidação, mas a dor limita a excursão respiratória.'
-            ] 
-        },
-        { 
-            name: 'Estridor', 
-            file: 'ESTRIDOR.m4a', 
-            contexts: [
-                'Criança de 2 anos levada ao pronto-socorro após episódio súbito de engasgo enquanto brincava. Apresenta-se cianótica, com batimento de asa de nariz e retração supraesternal acentuada. O quadro sugere obstrução alta.',
-                'Paciente de 20 anos com quadro de anafilaxia após ingestão de amendoim. Apresenta edema labial e facial, evoluindo rapidamente com grande esforço respiratório focado na região cervical.',
-                'Idoso com câncer de esôfago avançado que apresenta invasão local da traqueia. Queixa-se de dificuldade progressiva para respirar que piora em decúbito dorsal. A palpação da traqueia revela vibrações anômalas no ciclo.'
-            ] 
-        },
-        { 
-            name: 'Murmúrio Vesicular', 
-            file: 'Murmurio_vesicular.m4a', 
-            contexts: [
-                'Estudante de 22 anos realiza exame físico admissional. Na inspeção estática e dinâmica, o tórax é normolíneo e a expansibilidade é simétrica. A percussão demonstra som claro pulmonar em todos os campos.',
-                'Paciente assintomático durante avaliação pré-operatória. O exame respiratório mostra frêmito toraco-vocal normal e ausência de qualquer sinal de patologia pulmonar ou pleural nas manobras de palpação.',
-                'Avaliação de um pulmão saudável durante aula prática. O parênquima está íntegro e as vias aéreas estão livres. A percussão das áreas infraescapulares e axilares resulta em sonoridade pulmonar normal.'
-            ] 
-        },
-        { 
-            name: 'Estertor Grosso', 
-            file: 'estertor grosso.m4a', 
-            contexts: [
-                'Paciente com bronquiectasias apresenta tosse produtiva com expectoração volumosa. No exame físico, percebem-se vibrações grosseiras à palpação torácica (frêmito brônquico) que diminuem após a expectoração.',
-                'Idoso com pneumonia nosocomial em paciente acamado. Apresenta grande quantidade de secreção em vias aéreas centrais. A tosse é ineficaz e observa-se desconforto respiratório moderado com taquipneia.',
-                'Paciente com edema agudo de pulmão evoluindo para insuficiência respiratória. Apresenta expectoração espumosa e rosada. O líquido parece ocupar tanto os alvéolos quanto as vias aéreas de condução.'
-            ] 
-        },
-        { 
-            name: 'Som Brônquico', 
-            file: 'SOM BRÔNQUICO.m4a', 
-            contexts: [
-                'Exame físico realizado sobre a região da traqueia e laringe em um indivíduo normal. Esta é a região anatômica padrão para o achado fisiológico deste tipo de som devido ao calibre da via aérea.',
-                'Paciente com pneumonia extensa consolidando todo o lobo superior direito. O parênquima pulmonar tornou-se uma massa sólida, facilitando a transmissão dos sons das vias aéreas centrais para a parede torácica.',
-                'Grande caverna tuberculosa localizada no ápice pulmonar, que se comunica livremente com um brônquio de grande calibre. O exame físico revela macicez percutória ao redor da área cavitária.'
-            ] 
-        },
-        { 
-            name: 'Som Broncovesicular', 
-            file: 'SOM BRONCOVESICULAR.m4a', 
-            contexts: [
-                'Ausculta realizada na região esternal superior e no segundo espaço intercostal de um paciente hígido. Estas áreas correspondem à sobreposição dos grandes brônquios com o parênquima periférico.',
-                'Avaliação da região interescapular de um adulto jovem durante exame físico de rotina. Esta área é conhecida por apresentar uma mistura de características dos sons centrais e periféricos.',
-                'Paciente sem queixas respiratórias em exame clínico. O médico avalia a região hilar anterior. Os demais pilares do exame (inspeção, palpação e percussão) encontram-se dentro da normalidade.'
-            ] 
-        }
+        { name: 'Estertor Fino', file: 'estertor fino.m4a', contexts: ['Paciente de 70 anos com insuficiência cardíaca descompensada. Apresenta ortopneia e edema de membros inferiores ++/4+. Na percussão, nota-se submacicez em bases pulmonares e a palpação demonstra expansibilidade levemente diminuída. O diagnóstico provável é congestão pulmonar passiva.', 'Homem de 50 anos com febre de 39°C, calafrios e tosse com expectoração herrugeante há 2 dias. No exame físico, apresenta aumento do frêmito toraco-vocal (FTV) no lobo inferior direito e macicez à percussão localizada.', 'Mulher de 65 anos com queixa de dispneia progressiva aos esforços há 1 ano. Apresenta baqueteamento digital e sinais de perda de volume pulmonar na inspeção dinâmica.'] },
+        { name: 'Sibilo', file: 'SIBILO.m4a', contexts: ['Paciente de 12 anos chega à emergência com taquipneia, uso de musculatura acessória e tiragem intercostal. Relata histórico familiar de atopias. O tórax parece hiperinsuflado e a percussão revela hipersonoridade difusa.', 'Homem de 58 anos, tabagista crônico, apresenta-se com tórax em tonel, cianose de extremidades e tosse produtiva. O frêmito toraco-vocal está globalmente reduzido e o tempo expiratório parece visivelmente prolongado.', 'Paciente jovem com queixa de "aperto no peito" e falta de ar após contato com animais domésticos. Apresenta-se ansioso, com fala entrecortada e sudorese profusa, sem sinais de consolidação ao exame físico.'] },
+        { name: 'Atrito Pleural', file: 'atrito pleural.m4a', contexts: ['Paciente de 28 anos com dor torácica aguda, pontual, que se intensifica significativamente durante a inspiração profunda e tosse. Relata melhora parcial ao deitar-se sobre o lado afetado. A expansibilidade está reduzida unilateralmente.', 'Homem em investigação para tromboembolismo pulmonar apresenta dor pleurítica súbita no hemitórax esquerdo. Não há sinais de secreção nas vias aéreas ou febre. O ruído percebido no local da dor desaparece se o paciente sustentar a apneia.', 'Paciente com lúpus eritematoso sistêmico apresenta-se com inflamação das serosas. Queixa-se de desconforto respiratório e dor aguda lateral. O exame físico não demonstra sinais de consolidação, mas a dor limita a excursão respiratória.'] },
+        { name: 'Estridor', file: 'ESTRIDOR.m4a', contexts: ['Criança de 2 anos levada ao pronto-socorro após episódio súbito de engasgo enquanto brincava. Apresenta-se cianótica, com batimento de asa de nariz e retração supraesternal acentuada. O quadro sugere obstrução alta.', 'Paciente de 20 anos com quadro de anafilaxia após ingestão de amendoim. Apresenta edema labial e facial, evoluindo rapidamente com grande esforço respiratório focado na região cervical.', 'Idoso com câncer de esôfago avançado que apresenta invasão local da traqueia. Queixa-se de dificuldade progressiva para respirar que piora em decúbito dorsal. A palpação da traqueia revela vibrações anômalas no ciclo.'] },
+        { name: 'Murmúrio Vesicular', file: 'Murmurio_vesicular.m4a', contexts: ['Estudante de 22 anos realiza exame físico admissional. Na inspeção estática e dinâmica, o tórax é normolíneo e a expansibilidade é simétrica. A percussão demonstra som claro pulmonar em todos os campos.', 'Paciente assintomático durante avaliação pré-operatória. O exame respiratório mostra frêmito toraco-vocal normal e ausência de qualquer sinal de patologia pulmonar ou pleural nas manobras de palpação.', 'Avaliação de um pulmão saudável durante aula prática. O parênquima está íntegro e as vias aéreas estão livres. A percussão das áreas infraescapulares e axilares resulta em sonoridade pulmonar normal.'] },
+        { name: 'Estertor Grosso', file: 'estertor grosso.m4a', contexts: ['Paciente com bronquiectasias apresenta tosse produtiva com expectoração volumosa. No exame físico, percebem-se vibrações grosseiras à palpação torácica (frêmito brônquico) que diminuem após a expectoração.', 'Idoso com pneumonia nosocomial em paciente acamado. Apresenta grande quantidade de secreção em vias aéreas centrais. A tosse é ineficaz e observa-se desconforto respiratório moderado com taquipneia.', 'Paciente com edema agudo de pulmão evoluindo para insuficiência respiratória. Apresenta expectoração espumosa e rosada. O líquido parece ocupar tanto os alvéolos quanto as vias aéreas de condução.'] },
+        { name: 'Som Brônquico', file: 'SOM BRÔNQUICO.m4a', contexts: ['Exame físico realizado sobre a região da traqueia e laringe em um indivíduo normal. Esta é a região anatômica padrão para o achado fisiológico deste tipo de som devido ao calibre da via aérea.', 'Paciente com pneumonia extensa consolidando todo o lobo superior direito. O parênquima pulmonar tornou-se uma massa sólida, facilitando a transmissão dos sons das vias aéreas centrais para a parede torácica.', 'Grande caverna tuberculosa localizada no ápice pulmonar, que se comunica livremente com um brônquio de grande calibre. O exame físico revela macicez percutória ao redor da área cavitária.'] },
+        { name: 'Som Broncovesicular', file: 'SOM BRONCOVESICULAR.m4a', contexts: ['Ausculta realizada na região esternal superior e no segundo espaço intercostal de um paciente hígido. Estas áreas correspondem à sobreposição dos grandes brônquios com o parênquima periférico.', 'Avaliação da região interescapular de um adulto jovem durante exame físico de rotina. Esta área é conhecida por apresentar uma mistura de características dos sons centrais e periféricos.', 'Paciente sem queixas respiratórias em exame clínico. O médico avalia a região hilar anterior. Os demais pilares do exame (inspeção, palpação e percussão) encontram-se dentro da normalidade.'] }
     ];
 
     let quizList = [];
@@ -156,7 +76,7 @@
     let score = 0;
     let history = [];
 
-    // Lista inicial
+    // Inicialização
     const initialListDiv = document.getElementById('initial-list');
     database.forEach(s => {
         const div = document.createElement('div');
@@ -189,7 +109,12 @@
     function showQuestion() {
         const q = quizList[currentIdx];
         document.getElementById('case-text').innerText = q.ctx;
-        document.getElementById('main-audio').src = q.file;
+        
+        const audioTag = document.getElementById('main-audio');
+        audioTag.pause();
+        audioTag.src = q.file;
+        audioTag.load(); // Carrega o novo arquivo em background
+
         document.getElementById('user-answer').value = '';
         document.getElementById('user-answer').disabled = false;
         document.getElementById('feedback').innerText = '';
@@ -199,10 +124,26 @@
         document.getElementById('progress').style.width = `${((currentIdx + 1) / quizList.length) * 100}%`;
     }
 
-    function playAudio(id) {
-        const a = document.getElementById(id);
-        a.load(); // Garante o carregamento do arquivo
-        a.play().catch(e => alert("Erro: Verifique se os arquivos de áudio estão na mesma pasta do HTML."));
+    // NOVA FUNÇÃO DE PLAYER (MAIS ROBUSTA)
+    function playCurrentAudio() {
+        const audio = document.getElementById('main-audio');
+        audio.currentTime = 0; // Reinicia o som
+        
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                // Áudio rodando normalmente
+            }).catch(error => {
+                console.error("Erro ao tocar:", error);
+                alert("Erro ao carregar o arquivo: " + audio.src + "\nVerifique se o nome está correto na pasta.");
+            });
+        }
+    }
+
+    // Função para tocar na revisão final
+    function playReviewAudio(file, btn) {
+        const tempAudio = new Audio(file);
+        tempAudio.play();
     }
 
     function checkAnswer() {
@@ -242,12 +183,12 @@
             div.className = 'result-item';
             div.innerHTML = `
                 <div class="result-info">
-                    <span class="status-tag ${item.isCorrect ? 'tag-success' : 'tag-error'}">${item.isCorrect ? 'Acerto' : 'Erro'}</span>
-                    <div style="font-size:0.85rem; margin-top:5px;"><strong>Som:</strong> ${item.name}</div>
-                    <div style="font-size:0.75rem; color:#64748b; font-style:italic;">"${item.ctx.substring(0, 60)}..."</div>
+                    <span style="font-weight:bold; color:${item.isCorrect ? 'var(--success)' : 'var(--error)'}">
+                        ${item.isCorrect ? 'ACERTO' : 'ERRO'}
+                    </span>
+                    <div style="font-size:0.85rem;"><strong>Som:</strong> ${item.name}</div>
                 </div>
-                <button class="mini-audio-btn" onclick="playAudio('audio-rev-${index}')">▶️ Ouvir</button>
-                <audio id="audio-rev-${index}" src="${item.file}"></audio>
+                <button class="mini-audio-btn" onclick="playReviewAudio('${item.file}', this)">▶️ Ouvir</button>
             `;
             reviewDiv.appendChild(div);
         });
