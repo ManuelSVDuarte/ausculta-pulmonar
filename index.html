@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulado de Ausculta Pulmonar Profissional</title>
+    <title>Simulado de Ausculta Pulmonar</title>
     <style>
         :root { --primary: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --success: #22c55e; --error: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
@@ -22,21 +22,20 @@
         .audio-btn { width: 60px; height: 60px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; display: block; margin: 0 auto 20px; }
         input[type="text"] { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; font-size: 1rem; margin-bottom: 10px; }
         .feedback-area { text-align: center; font-weight: bold; margin: 10px 0; min-height: 20px; }
+        .hidden { display: none; }
         .result-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-radius: 8px; margin-bottom: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
-        .result-info { flex-grow: 1; margin-right: 10px; }
         .status-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
         .tag-success { background: #dcfce7; color: #166534; }
         .tag-error { background: #fee2e2; color: #991b1b; }
         .mini-audio-btn { background: #e2e8f0; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="start-screen" class="screen active">
-        <h1>Simulado de Ausculta</h1>
-        <p>Analise os casos clínicos e identifique o som pulmonar correspondente:</p>
+        <h1>Simulado de Semiologia</h1>
+        <p>Analise o quadro clínico e identifique o som pulmonar correspondente através da audição:</p>
         <div class="sound-list" id="initial-list"></div>
         <button class="btn btn-primary" onclick="startQuiz()">Começar Simulado</button>
     </div>
@@ -52,7 +51,7 @@
         </button>
         <audio id="main-audio"></audio>
 
-        <input type="text" id="user-answer" placeholder="Digite o nome do som conforme a lista..." autocomplete="off">
+        <input type="text" id="user-answer" placeholder="Digite o nome exato do som..." autocomplete="off">
         <div id="feedback" class="feedback-area"></div>
         
         <button id="check-btn" class="btn btn-primary" onclick="checkAnswer()">Conferir Resposta</button>
@@ -61,7 +60,7 @@
 
     <div id="result-screen" class="screen">
         <h2>Resultado Final</h2>
-        <p id="final-score" style="text-align:center; font-weight:bold; font-size: 1.2rem;"></p>
+        <p id="final-score" style="text-align:center; font-weight:bold;"></p>
         <div id="results-review"></div>
         <button class="btn btn-primary" onclick="location.reload()">Refazer Simulado</button>
     </div>
@@ -73,72 +72,72 @@
             name: 'Estertor Fino', 
             file: 'estertor fino.m4a', 
             contexts: [
-                'Paciente de 68 anos, hipertenso, apresenta dispneia progressiva aos esforços e tosse seca. Ao exame, apresenta expansibilidade preservada, mas a percussão revela submacicez em bases. Na ausculta, nota-se este som descontínuo, agudo, ouvido principalmente no final da inspiração, que não se altera com a tosse, sugerindo abertura súbita de alvéolos colapsados por líquido intersticial (Insuficiência Cardíaca Congestiva).',
-                'Homem de 45 anos com febre alta, calafrios e dor torácica pleurítica à direita. O exame físico demonstra aumento do Frêmito Toraco-Vocal (FTV) e macicez no lobo inferior direito. A ausculta revela um ruído tipo "velcro" inspiratório na área afetada, indicando preenchimento alveolar por exsudato inflamatório característico de pneumonia lobar em fase de hepatização.',
-                'Mulher de 72 anos com histórico de tabagismo e artrite reumatoide queixa-se de falta de ar crônica e "dedos em baqueta de tambor" (baqueteamento digital). À palpação, o tórax é pouco elástico. Na ausculta das regiões infraescapulares, ouve-se este ruído fino e nítido de curta duração, compatível com fibrose pulmonar idiopática.'
+                'Paciente de 70 anos com insuficiência cardíaca descompensada. Apresenta ortopneia e edema de membros inferiores ++/4+. Na percussão, nota-se submacicez em bases pulmonares e a palpação demonstra expansibilidade levemente diminuída. O diagnóstico provável é congestão pulmonar passiva.',
+                'Homem de 50 anos com febre de 39°C, calafrios e tosse com expectoração herrugeante há 2 dias. No exame físico, apresenta aumento do frêmito toraco-vocal (FTV) no lobo inferior direito e macicez à percussão localizada.',
+                'Mulher de 65 anos com queixa de dispneia progressiva aos esforços há 1 ano. Apresenta baqueteamento digital (dedos em baqueta de tambor) e sinais de perda de volume pulmonar na inspeção dinâmica.'
             ] 
         },
         { 
             name: 'Sibilo', 
             file: 'SIBILO.m4a', 
             contexts: [
-                'Criança de 8 anos é trazida à emergência com crises de tosse noturna e opressão torácica. Observa-se o uso de musculatura acessória e tempo expiratório prolongado. A percussão é de hipersonoridade difusa. Durante a expiração, ouve-se este som musical contínuo e agudo, indicando estreitamento generalizado das vias aéreas inferiores por broncoespasmo (Crise de Asma).',
-                'Paciente de 60 anos, tabagista pesado (50 maços/ano), apresenta tosse produtiva crônica e dispneia. Ao exame físico, nota-se tórax em tonel e redução global do FTV. A ausculta revela este som musical agudo distribuído por ambos os pulmões, característico da limitação ao fluxo aéreo por inflamação e muco nas pequenas vias aéreas (DPOC exacerbada).',
-                'Paciente jovem apresenta dispneia súbita e sensação de chiado no peito após exposição a pólen. Ao exame, apresenta taquipneia e fala entrecortada. A ausculta pulmonar evidencia este som musical agudo, predominante na fase expiratória, resultante da passagem do ar por brônquios estreitados e edemaciados.'
+                'Paciente de 12 anos chega à emergência com taquipneia, uso de musculatura acessória e tiragem intercostal. Relata histórico familiar de atopias. O tórax parece hiperinsuflado e a percussão revela hipersonoridade difusa.',
+                'Homem de 58 anos, tabagista crônico, apresenta-se com tórax em tonel, cianose de extremidades e tosse produtiva. O frêmito toraco-vocal está globalmente reduzido e o tempo expiratório parece visivelmente prolongado.',
+                'Paciente jovem com queixa de "aperto no peito" e falta de ar após contato com animais domésticos. Apresenta-se ansioso, com fala entrecortada e sudorese profusa, sem sinais de consolidação ou derrame pleural ao exame físico.'
             ] 
         },
         { 
             name: 'Atrito Pleural', 
             file: 'atrito pleural.m4a', 
             contexts: [
-                'Paciente de 35 anos queixa-se de dor intensa no hemitórax esquerdo que piora ao respirar fundo ou tossir (dor pleurítica). Na palpação, nota-se redução da expansibilidade no lado doloroso. A ausculta revela um ruído superficial, semelhante ao couro rangendo, ouvido em ambas as fases respiratórias, indicando o roçar das pleuras inflamadas e rugosas.',
-                'Homem com suspeita de infarto pulmonar secundário a tromboembolismo apresenta desconforto respiratório e dor aguda lateral. O exame físico não mostra alterações na percussão, mas a ausculta local identifica este som rascante e descontínuo que desaparece quando o paciente prende a respiração, confirmando origem pleural e não pericárdica.',
-                'Paciente em investigação de tuberculose pleural apresenta febre vespertina e dor torácica. No início do quadro clínico, antes da formação de grande derrame pleural, nota-se este ruído de fricção bem localizado na região axilar inferior, indicando o contato direto entre a pleura visceral e parietal inflamadas.'
+                'Paciente de 28 anos com dor torácica aguda, pontual, que se intensifica significativamente durante a inspiração profunda e tosse. Relata melhora parcial ao deitar-se sobre o lado afetado. A expansibilidade está reduzida unilateralmente por defesa álgica.',
+                'Homem em investigação para tromboembolismo pulmonar apresenta dor pleurítica súbita no hemitórax esquerdo. Não há sinais de secreção nas vias aéreas ou febre. O ruído percebido no local da dor desaparece momentaneamente se o paciente sustentar a apneia.',
+                'Paciente com lúpus eritematoso sistêmico apresenta-se com inflamação das serosas. Queixa-se de desconforto respiratório e dor aguda lateral. O exame físico não demonstra sinais de consolidação, mas a dor limita a excursão respiratória.'
             ] 
         },
         { 
             name: 'Estridor', 
             file: 'ESTRIDOR.m4a', 
             contexts: [
-                'Criança de 3 anos é levada ao pronto-socorro com início súbito de dificuldade respiratória após brincar com peças pequenas. Apresenta tiragem infraesternal e supraesternal intensa. Sem estetoscópio, ouve-se este som agudo e forte durante a inspiração, indicando uma obstrução grave em nível de laringe ou traqueia (Corpo estranho).',
-                'Paciente de 25 anos apresenta reação anafilática grave após picada de inseto, evoluindo com edema de glote. Observa-se grande esforço respiratório e agitação. A ausculta sobre a região cervical revela este som inspiratório de alta frequência e alta intensidade, sinalizando o fechamento iminente das vias aéreas superiores.',
-                'Idoso com diagnóstico de neoplasia de laringe evolui com rouquidão e dispneia progressiva. Ao exame físico, apresenta respiração ruidosa audível à distância. O som característico captado na região do pescoço é um ruído musical intenso e contínuo durante a entrada de ar, decorrente da redução importante da luz glótica.'
+                'Criança de 2 anos levada ao pronto-socorro após episódio súbito de engasgo enquanto brincava. Apresenta-se cianótica, com batimento de asa de nariz e retração supraesternal acentuada. O quadro sugere obstrução alta.',
+                'Paciente de 20 anos com quadro de anafilaxia após ingestão de amendoim. Apresenta edema labial e facial, evoluindo rapidamente com grande esforço respiratório focado na entrada de ar pela laringe.',
+                'Idoso com câncer de esôfago avançado que apresenta invasão local da traqueia. Queixa-se de dificuldade progressiva para respirar que piora em decúbito dorsal. A palpação da traqueia revela vibrações anômalas durante o ciclo respiratório.'
             ] 
         },
         { 
             name: 'Murmúrio Vesicular', 
             file: 'Murmurio_vesicular.m4a', 
             contexts: [
-                'Adulto jovem, hígido, realiza exame de rotina para check-up admissional. Não apresenta queixas respiratórias. À inspeção, a expansibilidade é simétrica e o FTV é normal. A ausculta em toda a periferia dos campos pulmonares revela este som suave, de baixa intensidade, com inspiração mais longa e audível que a expiração, representando a entrada de ar fisiológica.',
-                'Atleta de 22 anos passa por avaliação física pré-temporada. O tórax é normolíneo e a percussão é claro pulmonar em toda a extensão. A ausculta pulmonar identifica este som suave e contínuo, sem ruídos adventícios, característico do fluxo de ar nos bronquíolos e alvéolos em parênquima pulmonar saudável.',
-                'Paciente assintomático durante exame físico acadêmico. O examinador posiciona o estetoscópio nas regiões infraescapulares e axilares. O som ouvido é delicado, como o sussurro da brisa entre as folhas das árvores, sendo este o achado padrão esperado para um pulmão sem patologias.'
+                'Estudante de 22 anos, sem comorbidades, realiza exame físico admissional para estágio. Na inspeção estática e dinâmica, o tórax é normolíneo e a expansibilidade é simétrica. A percussão demonstra som claro pulmonar em todos os campos.',
+                'Paciente assintomático durante avaliação pré-operatória de cirurgia ortopédica. O exame respiratório mostra frêmito toraco-vocal normal e ausência de qualquer sinal de patologia pulmonar ou pleural nas manobras de palpação.',
+                'Avaliação de um pulmão saudável durante aula prática de semiologia. O parênquima está íntegro e as vias aéreas estão livres. A percussão das áreas infraescapulares e axilares resulta em sonoridade pulmonar normal.'
             ] 
         },
         { 
             name: 'Estertor Grosso', 
             file: 'estertor grosso.m4a', 
             contexts: [
-                'Paciente com diagnóstico de bronquiectasias apresenta tosse produtiva com grande volume de secreção purulenta matinal. Na ausculta, ouve-se este som grave, bolhoso, que ocorre no início da inspiração e durante a expiração. O ruído altera-se significativamente ou desaparece após o paciente tossir e expectorar, indicando muco nas grandes vias aéreas.',
-                'Idoso acamado com pneumonia aspirativa apresenta respiração ruidosa e estertorosa. Ao exame físico, nota-se a presença de secreção abundante em via aérea superior. A ausculta pulmonar revela este som de "borbulhamento", indicando que o ar está passando por canais brônquicos repletos de secreção espessa e exsudato.',
-                'Paciente com quadro de edema agudo de pulmão em estágio avançado apresenta expectoração rósea e espumosa. A ausculta evidencia estes ruídos bolhosos e graves, que começam nas bases e "sobem" em direção aos ápices conforme a congestão aumenta, refletindo a presença de líquido nas vias aéreas de maior calibre.'
+                'Paciente com bronquiectasias infectadas apresenta tosse produtiva com expectoração fétida e volumosa. No exame físico, percebem-se vibrações grosseiras à palpação torácica (frêmito brônquico) que diminuem após a expectoração.',
+                'Idoso com diagnóstico de pneumonia nosocomial em paciente acamado. Apresenta grande quantidade de secreção em vias aéreas centrais. A tosse é ineficaz e observa-se desconforto respiratório moderado com taquipneia.',
+                'Paciente com edema agudo de pulmão evoluindo para insuficiência respiratória grave. Apresenta expectoração espumosa e rosada. O líquido parece ocupar não apenas os alvéolos, mas também as vias aéreas de condução.'
             ] 
         },
         { 
             name: 'Som Brônquico', 
             file: 'SOM BRÔNQUICO.m4a', 
             contexts: [
-                'Exame físico realizado sobre a região da traqueia em um paciente saudável. O som captado é intenso, de alta frequência, com uma pausa nítida entre a inspiração e a expiração. A fase expiratória é ligeiramente mais longa e forte que a inspiratória, representando o som normal do fluxo de ar em tubos de grande calibre.',
-                'Paciente com pneumonia consolidada no lobo médio direito. Ao colocar o estetoscópio sobre a área de macicez (onde deveria haver murmúrio vesicular), o médico ouve este som tubular e oco, indicando que o parênquima sólido está transmitindo o som das grandes vias aéreas centrais para a periferia sem filtragem.',
-                'Durante a avaliação de uma grande cavitação pulmonar (caverna por Tuberculose) no ápice esquerdo, a ausculta revela um som soprante, intenso e de tonalidade aguda. Este achado, semelhante ao som ouvido sobre a laringe, ocorre devido à transmissão direta do som da árvore brônquica através de uma área de consolidação ou cavidade aberta.'
+                'Exame físico realizado sobre a região da traqueia e laringe em um indivíduo normal. Esta é a região anatômica padrão para o achado fisiológico deste tipo de som devido ao calibre da via aérea.',
+                'Paciente com pneumonia extensa consolidando todo o lobo superior direito. O parênquima pulmonar tornou-se uma massa sólida, facilitando a transmissão dos sons das vias aéreas centrais para a parede torácica naquela região específica.',
+                'Grande caverna tuberculosa localizada no ápice pulmonar, que se comunica livremente com um brônquio de grande calibre. O exame físico revela macicez percutória ao redor da área cavitária.'
             ] 
         },
         { 
             name: 'Som Broncovesicular', 
             file: 'SOM BRONCOVESICULAR.m4a', 
             contexts: [
-                'Estudante de medicina realiza ausculta no 1º e 2º espaços intercostais anteriores (região hilar) de um colega saudável. O som ouvido possui intensidade moderada e a duração das fases inspiratória e expiratória é praticamente igual, sem pausa entre elas, representando a normalidade para esta região anatômica específica.',
-                'Na região interescapular (próximo à coluna vertebral), o examinador identifica um som que é uma mistura de características: nem tão suave quanto o vesicular, nem tão áspero quanto o brônquico. Este som é fisiológico nesta localização devido à proximidade dos grandes brônquios com a parede posterior do tórax.',
-                'Ausculta de transição em um paciente sem doenças pulmonares. O examinador move o estetoscópio das regiões periféricas para a região esternal superior. Nota-se que o som torna-se um pouco mais forte e agudo que na periferia, mantendo a continuidade entre inspiração e expiração, caracterizando este som de transição.'
+                'Ausculta realizada na região esternal superior e no segundo espaço intercostal de um paciente hígido. Estas áreas correspondem à sobreposição dos grandes brônquios com o parênquima pulmonar periférico.',
+                'Avaliação da região interescapular de um adulto jovem durante exame físico de rotina. Esta área é conhecida anatomicamente por apresentar uma mistura de características dos sons centrais e periféricos.',
+                'Paciente sem queixas respiratórias em exame clínico. O médico avalia a região hilar anterior. Os demais pilares do exame físico (inspeção, palpação e percussão) encontram-se rigorosamente dentro da normalidade.'
             ] 
         }
     ];
@@ -172,7 +171,6 @@
                       {name: s.name, file: s.file, ctx: s.contexts[2]});
         });
         quizList = shuffle(pool);
-        
         document.getElementById('start-screen').classList.remove('active');
         document.getElementById('game-screen').classList.add('active');
         showQuestion();
@@ -187,7 +185,6 @@
         document.getElementById('feedback').innerText = '';
         document.getElementById('check-btn').classList.remove('hidden');
         document.getElementById('next-btn').classList.add('hidden');
-        
         document.getElementById('q-counter').innerText = `QUESTÃO ${currentIdx + 1} DE ${quizList.length}`;
         document.getElementById('progress').style.width = `${((currentIdx + 1) / quizList.length) * 100}%`;
     }
@@ -202,11 +199,9 @@
         const q = quizList[currentIdx];
         const userAns = document.getElementById('user-answer').value;
         const isCorrect = normalize(userAns) === normalize(q.name);
-        
         document.getElementById('user-answer').disabled = true;
         document.getElementById('check-btn').classList.add('hidden');
         document.getElementById('next-btn').classList.remove('hidden');
-
         const feedback = document.getElementById('feedback');
         if(isCorrect) {
             feedback.innerHTML = `<span style="color:var(--success)">✅ Correto!</span>`;
@@ -214,7 +209,6 @@
         } else {
             feedback.innerHTML = `<span style="color:var(--error)">❌ Incorreto. O som é: ${q.name}</span>`;
         }
-
         history.push({ ...q, userAns, isCorrect });
     }
 
@@ -227,21 +221,17 @@
     function showFinalResults() {
         document.getElementById('game-screen').classList.remove('active');
         document.getElementById('result-screen').classList.add('active');
-        document.getElementById('final-score').innerText = `Você acertou ${score} de ${quizList.length} (${Math.round(score/quizList.length*100)}%)`;
-        
+        document.getElementById('final-score').innerText = `Você acertou ${score} de ${quizList.length}`;
         const reviewDiv = document.getElementById('results-review');
-        reviewDiv.innerHTML = '<h3>Revisão Técnica:</h3>';
-
+        reviewDiv.innerHTML = '<h3>Revisão:</h3>';
         history.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'result-item';
             div.innerHTML = `
                 <div class="result-info">
-                    <span class="status-tag ${item.isCorrect ? 'tag-success' : 'tag-error'}">
-                        ${item.isCorrect ? 'Acerto' : 'Erro'}
-                    </span>
+                    <span class="status-tag ${item.isCorrect ? 'tag-success' : 'tag-error'}">${item.isCorrect ? 'Acerto' : 'Erro'}</span>
                     <div style="font-size:0.85rem; margin-top:5px;"><strong>Som:</strong> ${item.name}</div>
-                    <div style="font-size:0.75rem; color:#64748b; font-style: italic;">"${item.ctx.substring(0, 80)}..."</div>
+                    <div style="font-size:0.75rem; color:#64748b; font-style:italic;">"${item.ctx.substring(0, 70)}..."</div>
                 </div>
                 <button class="mini-audio-btn" onclick="playAudio('audio-rev-${index}')">▶️ Ouvir</button>
                 <audio id="audio-rev-${index}" src="${item.file}"></audio>
